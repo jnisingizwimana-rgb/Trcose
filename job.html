@@ -91,6 +91,13 @@ body.job-standalone .job-portal-note{display:block}
  .jobLanguageWrap{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border:1px solid #cfe0ff;border-radius:11px;background:#eef4ff;color:#1769ff;font-weight:700;white-space:nowrap}.jobLanguageWrap select{width:auto;min-width:62px;max-width:85px;margin:0;padding:7px 4px;border:0;outline:none;background:transparent;color:#1769ff;font-weight:800;font-size:12px}.jobPortalActions{align-items:center}@media(max-width:420px){.jobPortalActions{gap:5px}.jobPortalActions button{padding:8px 9px;font-size:12px}.jobLanguageWrap{padding:3px 5px}.jobLanguageWrap select{min-width:54px;font-size:11px}}
 .topLanguageWrap{display:inline-flex;align-items:center;gap:3px;background:#eaf1ff;color:#1769ff;border-radius:10px;padding:3px 5px}.topLanguageWrap select{width:auto;min-width:48px;border:0;padding:5px;background:transparent;color:#1769ff;font-weight:700}.supportTopBtn{display:inline-flex;align-items:center;text-decoration:none;background:#1769ff;color:#fff;border-radius:10px;padding:8px 10px;font-weight:700;font-size:12px}
 </style>
+<style>
+/* Google Translate stays available as an invisible engine; no toolbar/banner on the page. */
+.goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame,
+#goog-gt-tt, .goog-te-spinner-pos, .goog-te-gadget-icon { display:none !important; visibility:hidden !important; }
+html, body { top:0 !important; margin-top:0 !important; }
+#google_translate_element { position:fixed !important; left:-10000px !important; top:0 !important; width:1px !important; height:1px !important; overflow:hidden !important; opacity:0 !important; pointer-events:none !important; z-index:-1 !important; }
+</style>
 </head>
 <body class="job-standalone">
 <div class="jobPortalHead"><div><div class="jobPortalTitle">💼 Job Portal</div><div class="muted">Akazi, candidates n'ibizamini</div></div><div class="jobPortalActions"><button class="secondary" onclick="goToTrcoseAdmin()">🛡️ Admin</button><button class="secondary" onclick="window.open('https://wa.me/qr/SXDKDSH3MW7NO1','_blank','noopener')">💬 Support</button><label class="jobLanguageWrap" aria-label="Choose language">🌐 <select id="jobTopLanguageSelect" onchange="changeLanguage(this.value)" aria-label="Language"><option value="rw">🇷🇼 RW</option><option value="en">🇬🇧 EN</option><option value="fr">🇫🇷 FR</option><option value="sw">🇹🇿 SW</option><option value="es">🇪🇸 ES</option><option value="pt">🇵🇹 PT</option><option value="de">🇩🇪 DE</option><option value="ar">🇸🇦 AR</option></select></label><button onclick="window.location.href='index.html'">🏠 Home</button></div></div>
@@ -675,35 +682,7 @@ async function publishJobPost(){if(!user){openAuth();return}const title=$("publi
 async function loadPublicJobs(){const box=$("publicJobList");if(!box)return;box.innerHTML="Turimo gushaka akazi...";const {data,error}=await supabaseClient.from("jobs").select("*").eq("is_public",true).order("created_at",{ascending:false}).limit(100);if(error){box.innerHTML=`<div class="error">Jobs ntizapakiwe: ${escapeHTML(error.message)}</div>`;return}publicJobsCache=data||[];renderPublicJobs();const id=new URLSearchParams(location.search).get("job");if(id){if(publicJobsCache.some(j=>String(j.id)===id))openJobDetails(id);else{const {data:direct}=await supabaseClient.from("jobs").select("*").eq("id",id).eq("is_public",true).maybeSingle();if(direct){publicJobsCache.unshift(direct);openJobDetails(id)}else{$("jobDetailContent").innerHTML="<p class=error>Akazi ntikabonetse, ntikari public cyangwa ntikemejwe na Admin.</p>";$ ("jobDetailPanel")?.classList.remove("hidden")}}}}
 function renderPublicJobs(){const box=$("publicJobList");if(!box)return;const q=($("jobSearchInput")?.value||"").trim().toLowerCase(),type=$("jobTypeFilter")?.value||"";const list=publicJobsCache.filter(j=>(!type||j.job_type===type)&&(!q||[j.title,j.company,j.location,j.description,j.requirements,j.salary].join(" ").toLowerCase().includes(q)));box.innerHTML=list.length?list.map(j=>`<div class="listrow"><div style="display:flex;gap:12px;flex-wrap:wrap">${j.media_url?(j.media_type==="video"?`<video controls style="width:120px;max-height:100px" src="${escapeHTML(j.media_url)}"></video>`:`<img style="width:120px;height:90px;object-fit:cover;border-radius:10px" src="${escapeHTML(j.media_url)}" alt="">`):""}<div style="flex:1"><span class="badge">${escapeHTML(j.job_type||"Job")}</span><h3>${escapeHTML(j.title)}</h3><b>${escapeHTML(j.company||"Employer")}</b><p class="muted">📍 ${escapeHTML(j.location||"Ntabigaragajwe")} ${j.salary?" · "+escapeHTML(j.salary):""}</p><p>${escapeHTML((j.description||"").slice(0,180))}</p><button onclick="openJobDetails('${j.id}')">👀 Reba akazi</button> <button class="secondary" onclick="shareJob('${j.id}')">↗️ Share</button></div></div></div>`).join(""):'<p class="muted">Nta kazi public kabonetse.</p>'}
 function openJobDetails(id){const j=publicJobsCache.find(x=>String(x.id)===String(id));if(!j){const m=$("jobDetailContent");if(m)m.innerHTML='<p class="error">Akazi ntikabonetse cyangwa ntikiri public.</p>';$("jobDetailPanel")?.classList.remove("hidden");return}const url=jobShareUrl(id);$("jobDetailContent").innerHTML=`${j.media_url?(j.media_type==="video"?`<video class="media" controls playsinline src="${escapeHTML(j.media_url)}"></video>`:`<img class="media" src="${escapeHTML(j.media_url)}" alt="${escapeHTML(j.title)}">`):""}<span class="badge">${escapeHTML(j.job_type||"Job")}</span><h2>${escapeHTML(j.title)}</h2><h3>${escapeHTML(j.company||"Employer")}</h3><p>📍 ${escapeHTML(j.location||"Ntabigaragajwe")}</p><p class="price">${escapeHTML(j.salary||"Umushahara nturagaragazwa")}</p><h3>Ibisobanuro</h3><p>${escapeHTML(j.description||"")}</p>${j.requirements?`<h3>Ibisabwa</h3><p>${escapeHTML(j.requirements)}</p>`:""}${j.deadline?`<p><b>Deadline:</b> ${escapeHTML(j.deadline)}</p>`:""}<button onclick="applyForJob('${escapeHTML(j.id)}')">📝 Saba akazi</button>${user&&String(user.id)===String(j.user_id)?` <button class="secondary" onclick="toggleMyJob('${escapeHTML(j.id)}',${!j.is_public})">${j.is_public?'🙈 Kuramo public':'🌐 Shyira public'}</button> <button class="danger" onclick="deleteMyJob('${escapeHTML(j.id)}')">🗑️ Siba job</button>`:""}<h3>🔗 Sangiza aka kazi</h3><div class="smallgrid"><button onclick="shareJobPlatform('whatsapp','${escapeHTML(j.id)}')">WhatsApp</button><button onclick="shareJobPlatform('facebook','${escapeHTML(j.id)}')">Facebook</button><button onclick="shareJobPlatform('telegram','${escapeHTML(j.id)}')">Telegram</button><button class="secondary" onclick="copyJobLink('${escapeHTML(j.id)}')">📋 Copy Link</button></div><p class="muted" style="overflow-wrap:anywhere">${escapeHTML(url)}</p><p id="jobApplyMessage" class="muted"></p>`;$("jobDetailPanel").classList.remove("hidden");$("jobDetailPanel").scrollIntoView({behavior:"smooth"})}
- 
-async function toggleMyJob(id,makePublic){
-  if(!user){
-    openAuth();
-    return;
-  }
-
-  if(makePublic){
-    alert("Akazi kazajya public ari uko Admin amaze kwemeza ubwishyu bwa 2,000 RWF.");
-    return;
-  }
-
-  const {data,error}=await supabaseClient
-    .from("jobs")
-    .update({is_public:false,status:"hidden"})
-    .eq("id",id)
-    .eq("user_id",user.id)
-    .select()
-    .maybeSingle();
-
-  if(error||!data){
-    alert("Ntibyashobotse gukura akazi kuri public. Reba RLS policies za jobs.");
-    return;
-  }
-
-  await loadPublicJobs();
-  alert("Akazi kakuwemo kuri public.");
-  closeJobDetails();
-){if(!user){openAuth();return}const {data,error}=await supabaseClient.from("jobs").update({is_public:!!makePublic,status:makePublic?"published":"hidden"}).eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse guhindura public/private. Reba RLS policies za jobs.");return}await loadPublicJobs();alert(makePublic?"Job yashyizwe public.":"Job yakuwe public.");closeJobDetails()}async function deleteMyJob(id){if(!user||!confirm("Urasiba aka kazi burundu?"))return;const {data,error}=await supabaseClient.from("jobs").delete().eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse gusiba job. Reba RLS policies za jobs.");return}await loadPublicJobs();alert("Job yasibwe.");closeJobDetails()}
+async function toggleMyJob(id,makePublic){if(!user){openAuth();return}const {data,error}=await supabaseClient.from("jobs").update({is_public:!!makePublic,status:makePublic?"published":"hidden"}).eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse guhindura public/private. Reba RLS policies za jobs.");return}await loadPublicJobs();alert(makePublic?"Job yashyizwe public.":"Job yakuwe public.");closeJobDetails()}async function deleteMyJob(id){if(!user||!confirm("Urasiba aka kazi burundu?"))return;const {data,error}=await supabaseClient.from("jobs").delete().eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse gusiba job. Reba RLS policies za jobs.");return}await loadPublicJobs();alert("Job yasibwe.");closeJobDetails()}
 function closeJobDetails(){$("jobDetailPanel").classList.add("hidden");if(new URLSearchParams(location.search).has("job"))history.replaceState({},"",location.pathname)}
 function jobShareUrl(id){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("job",String(id));return u.toString()}
 function shareJob(id){const j=publicJobsCache.find(x=>String(x.id)===String(id));const url=jobShareUrl(id);shareItem(j?.title||"Trcose Job",url)}
@@ -905,5 +884,69 @@ const ZUNIVO_LANGUAGES = { rw: "Kinyarwanda", en: "English", fr: "Français", sw
     let adminExamQuestions=[]; let editingExamId=null; let examTimer=null; let activeExam=null; function addAdminExamQuestion(data=null){ const id="q_"+Date.now()+"_"+Math.random().toString(36).slice(2,7); adminExamQuestions.push({ localId:id, id:data?.id||null, question:data?.question||"", option_a:data?.option_a||"", option_b:data?.option_b||"", option_c:data?.option_c||"", option_d:data?.option_d||"", correct_answer:data?.correct_answer||"a" }); renderAdminExamQuestions(); } function renderAdminExamQuestions(){ const box=$("adminExamQuestions"); if(!adminExamQuestions.length){ box.innerHTML= '<div class="notice">Nta question urashyiramo. Kanda "Ongeramo Question".</div>'; return; } box.innerHTML=adminExamQuestions.map((q,i)=>` <div class="examBuilderQuestion"> <h4> Question ${i+1} </h4> <textarea placeholder="${escapeHTML(t("question"))}" oninput="updateAdminExamQuestion('${q.localId}','question',this.value)" >${escapeHTML(q.question)}</textarea> <div class="examOptionGrid"> <input placeholder="${escapeHTML(t("option_a"))}" value="${escapeHTML(q.option_a)}" oninput="updateAdminExamQuestion('${q.localId}','option_a',this.value)" > <input placeholder="${escapeHTML(t("option_b"))}" value="${escapeHTML(q.option_b)}" oninput="updateAdminExamQuestion('${q.localId}','option_b',this.value)" > <input placeholder="${escapeHTML(t("option_c"))}" value="${escapeHTML(q.option_c)}" oninput="updateAdminExamQuestion('${q.localId}','option_c',this.value)" > <input placeholder="${escapeHTML(t("option_d"))}" value="${escapeHTML(q.option_d)}" oninput="updateAdminExamQuestion('${q.localId}','option_d',this.value)" > </div> <div style="margin-top:10px"> <b>${escapeHTML(t("correct_answer"))}</b> <div class="examOptionGrid"> ${["a","b","c","d"].map(x=>` <label class="examOption"> <input type="radio" name="correct_${q.localId}" ${q.correct_answer===x?"checked":""} onchange="updateAdminExamQuestion('${q.localId}','correct_answer','${x}')" > ${x.toUpperCase()} </label> `).join("")} </div> </div> <div class="examAdminActions"> <button class="danger" onclick="removeAdminExamQuestion('${q.localId}')"> 🗑️ Remove </button> </div> </div> `).join(""); } function updateAdminExamQuestion(localId,key,value){ const q=adminExamQuestions.find(x=>x.localId===localId); if(q) q[key]=value; } function removeAdminExamQuestion(localId){ adminExamQuestions= adminExamQuestions.filter(x=>x.localId!==localId); renderAdminExamQuestions(); } function resetAdminExamBuilder(){ editingExamId=null; adminExamQuestions=[]; $("adminExamTitle").value=""; $("adminExamDescription").value=""; $("adminExamDuration").value=30; $("adminExamPassing").value=50; renderAdminExamQuestions(); } async function saveAdminExam(status){ if(!await isTrcoseAdmin()){ alert("Nturi Admin."); return; } const title=$("adminExamTitle").value.trim(); const description=$("adminExamDescription").value.trim(); const duration=Number($("adminExamDuration").value||30); const passing=Number($("adminExamPassing").value||50); if(!title){ $("adminExamManagerMessage").textContent= "Andika exam title."; return; } if(!adminExamQuestions.length){ $("adminExamManagerMessage").textContent= "Banza wongeremo questions."; return; } for(const q of adminExamQuestions){ if( !q.question.trim() || !q.option_a.trim() || !q.option_b.trim() || !q.option_c.trim() || !q.option_d.trim() ){ $("adminExamManagerMessage").textContent= "Buri question igomba kugira question na options A-D."; return; } } $("adminExamManagerMessage").textContent="⏳ Saving..."; let examId=editingExamId; if(examId){ const {error}=await supabaseClient .from("exams") .update({ title, description, duration_minutes:duration, passing_score:passing, status }) .eq("id",examId); if(error){ $("adminExamManagerMessage").textContent=error.message; return; } await supabaseClient .from("exam_questions") .delete() .eq("exam_id",examId); }else{ const {data,error}=await supabaseClient .from("exams") .insert({ title, description, duration_minutes:duration, passing_score:passing, status, created_by:user.id }) .select() .single(); if(error){ $("adminExamManagerMessage").textContent=error.message; return; } examId=data.id; } const rows=adminExamQuestions.map((q,index)=>({ exam_id:examId, question_order:index+1, question:q.question.trim(), option_a:q.option_a.trim(), option_b:q.option_b.trim(), option_c:q.option_c.trim(), option_d:q.option_d.trim(), correct_answer:q.correct_answer })); const {error:qError}=await supabaseClient .from("exam_questions") .insert(rows); if(qError){ $("adminExamManagerMessage").textContent=qError.message; return; } $("adminExamManagerMessage").innerHTML= status==="published" ? `<span class="success">${escapeHTML(t("exam_published_success"))}</span>` : `<span class="success">${escapeHTML(t("exam_saved"))}</span>`; resetAdminExamBuilder(); await loadAdminExamManager(); } async function loadAdminExamManager(){ if(!await isTrcoseAdmin())return; const box=$("adminExamManagerList"); box.innerHTML="⏳ Loading..."; const {data,error}=await supabaseClient .from("exams") .select("*") .order("created_at",{ascending:false}); if(error){ box.innerHTML= `<div class="error">${escapeHTML(error.message)}</div>`; return; } if(!data?.length){ box.innerHTML= `<p class="muted">${escapeHTML(t("no_exams"))}</p>`; return; } box.innerHTML=data.map(e=>` <div class="card" style="padding:14px;margin-bottom:10px"> <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"> <h3 style="margin:0"> ${escapeHTML(e.title)} </h3> <span class="status ${ e.status==="published" ?"examPublished" :"examDraft" }"> ${escapeHTML(e.status||"draft")} </span> </div> <p class="muted"> ${escapeHTML(e.description||"")} </p> <p> ⏱️ 
 ${escapeHTML(String(e.duration_minutes||0))} min · 🎯 ${escapeHTML(String(e.passing_score||0))}% </p> <div class="examAdminActions"> <button onclick="editAdminExam('${e.id}')"> ✏️ ${escapeHTML(t("edit"))} </button> ${ e.status!=="published" ? `<button class="successBtn" onclick="publishAdminExam('${e.id}')"> 🌐 ${escapeHTML(t("publish"))} </button>` : "" } <button class="danger" onclick="deleteAdminExam('${e.id}')"> 🗑️ ${escapeHTML(t("delete"))} </button> </div> </div> `).join(""); } async function editAdminExam(id){ if(!await isTrcoseAdmin())return; const {data:exam,error}=await supabaseClient .from("exams") .select("*") .eq("id",id) .single(); if(error){ alert(error.message); return; } const {data:questions,error:qError}=await supabaseClient .from("exam_questions") .select("*") .eq("exam_id",id) .order("question_order",{ascending:true}); if(qError){ alert(qError.message); return; } editingExamId=id; $("adminExamTitle").value=exam.title||""; $("adminExamDescription").value=exam.description||""; $("adminExamDuration").value=exam.duration_minutes||30; $("adminExamPassing").value=exam.passing_score||50; adminExamQuestions=(questions||[]).map((q,i)=>({ localId:"existing_"+i+"_"+Date.now(), id:q.id, question:q.question||"", option_a:q.option_a||"", option_b:q.option_b||"", option_c:q.option_c||"", option_d:q.option_d||"", correct_answer:q.correct_answer||"a" })); renderAdminExamQuestions(); window.scrollTo({ top:$("adminExamManagerSection").offsetTop-20, behavior:"smooth" }); } async function publishAdminExam(id){ if(!await isTrcoseAdmin())return; const {error}=await supabaseClient .from("exams") .update({status:"published"}) .eq("id",id); if(error){ alert(error.message); return; } await loadAdminExamManager(); } async function deleteAdminExam(id){ if(!await isTrcoseAdmin())return; if(!confirm("Urashaka gusiba iyi exam n'ibibazo byayo?")) return; const {error}=await supabaseClient .from("exams") .delete() .eq("id",id); if(error){ alert(error.message); return; } await loadAdminExamManager(); }
 </script>
+
+<!-- Google Translate engine is intentionally kept off-screen. Language choice is shared with Trcose Market/Job Portal. -->
+<div id="google_translate_element" aria-hidden="true"></div>
+<script>
+(function(){
+  const supported=['rw','en','fr','sw','es','pt','de','ar'];
+  function getSavedLanguage(){
+    try { const v=localStorage.getItem('trcose_language')||localStorage.getItem('zunivo_language')||'rw'; return supported.includes(v)?v:'rw'; }
+    catch(e){ return 'rw'; }
+  }
+  function setTranslateCookie(lang){
+    document.cookie='googtrans=/rw/'+lang+';path=/;max-age=31536000;SameSite=Lax';
+  }
+  window.googleTranslateElementInit=function(){
+    try {
+      if(window.google && google.translate && google.translate.TranslateElement){
+        new google.translate.TranslateElement({pageLanguage:'rw',includedLanguages:'rw,en,fr,sw,es,pt,de,ar',autoDisplay:false},'google_translate_element');
+        applyGoogleTranslation(getSavedLanguage());
+      }
+    } catch(e) { /* Keep the website usable if Google Translate is unavailable. */ }
+  };
+  window.applyGoogleTranslation=function(lang){
+    if(!supported.includes(lang)) lang='rw';
+    try {
+      localStorage.setItem('trcose_language',lang);
+      localStorage.setItem('zunivo_language',lang);
+      setTranslateCookie(lang);
+      const html=document.getElementById('zunivoHtml')||document.documentElement;
+      if(html) html.setAttribute('lang',lang);
+      let attempts=0;
+      const choose=()=>{
+        const combo=document.querySelector('.goog-te-combo');
+        if(combo){
+          if(combo.value!==lang){combo.value=lang;combo.dispatchEvent(new Event('change',{bubbles:true}));}
+          return;
+        }
+        if(attempts++<20) setTimeout(choose,300);
+      };
+      choose();
+    } catch(e) { /* Translation must never block marketplace/job features. */ }
+  };
+  const originalApply=window.applyTrcoseLanguage;
+  if(typeof originalApply==='function'){
+    window.applyTrcoseLanguage=function(lang){
+      originalApply(lang);
+      if(typeof window.applyGoogleTranslation==='function') window.applyGoogleTranslation(lang);
+      ['languageSelect','topLanguageSelect','jobTopLanguageSelect'].forEach(id=>{
+        const el=document.getElementById(id); if(el && el.value!==lang) el.value=lang;
+      });
+    };
+  }
+  window.addEventListener('storage',function(e){
+    if(e.key==='trcose_language'||e.key==='zunivo_language'){
+      const lang=getSavedLanguage();
+      ['languageSelect','topLanguageSelect','jobTopLanguageSelect'].forEach(id=>{
+        const el=document.getElementById(id); if(el && el.value!==lang) el.value=lang;
+      });
+      if(typeof window.applyGoogleTranslation==='function') window.applyGoogleTranslation(lang);
+    }
+  });
+})();
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
 </body>
 </html>
