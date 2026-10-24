@@ -605,10 +605,86 @@ async function likeProduct(id){
  if(data)await supabaseClient.from("product_likes").delete().eq("id",data.id);else await supabaseClient.from("product_likes").insert({product_id:id,user_id:user.id})
 }
 function buyProduct(id){const p=products.find(x=>x.id===id)||demoProducts.find(x=>x.id===id);if(!p)return;if(!user){openAuth();return}if(String(id).startsWith("demo")){alert("Iyi ni demo product. Shyiraho product nyayo.");return}startPayment("order",Number(p.price),p.id)}
-function shareItem(title,url){try{if(navigator.share){navigator.share({title,text:title,url});return}navigator.clipboard?.writeText(url);alert("Link yakopiwe.")}catch(e){}}
-function shareProduct(id){const p=products.find(x=>x.id===id)||demoProducts.find(x=>x.id===id);if(p)shareItem(p.name||"Trcose Product",location.href.split("?")[0]+"?product="+encodeURIComponent(id))}
-function shareReferral(){const c=$("myReferralCode")?.textContent?.trim()||"";shareItem("Trcose Referral "+c,location.href.split("?")[0]+"?ref="+encodeURIComponent(c))}
 
+async function shareItem(title, url) {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: title,
+        text: title,
+        url: url
+      });
+      return;
+    }
+  } catch (e) {
+    if (e.name === "AbortError") return;
+  }
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(url);
+      alert("Link yakopowe neza. Ushobora kuyisangiza abandi.");
+      return;
+    }
+  } catch (e) {}
+
+  try {
+    const input = document.createElement("textarea");
+    input.value = url;
+    input.style.position = "fixed";
+    input.style.left = "-9999px";
+    document.body.appendChild(input);
+    input.select();
+
+    const copied = document.execCommand("copy");
+    input.remove();
+
+    if (copied) {
+      alert("Link yakopowe neza. Ushobora kuyisangiza abandi.");
+    } else {
+      prompt("Kopa iyi link uyisangize abandi:", url);
+    }
+  } catch (e) {
+    prompt("Kopa iyi link uyisangize abandi:", url);
+  }
+}
+
+function makeShareUrl(parameter, id) {
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set(parameter, String(id));
+  return url.toString();
+}
+
+function shareProduct(id) {
+  const p = products.find(x => String(x.id) === String(id))
+    || demoProducts.find(x => String(x.id) === String(id));
+
+  if (!p) {
+    alert("Iki gicuruzwa nticyabonetse.");
+    return;
+  }
+
+  shareItem(
+    p.name || "Trcose Product",
+    makeShareUrl("product", id)
+  );
+}
+
+function shareReferral() {
+  const c = $("myReferralCode")?.textContent?.trim() || "";
+
+  if (!c) {
+    alert("Referral code yawe ntiraboneka.");
+    return;
+  }
+
+  shareItem(
+    "Trcose Referral " + c,
+    makeShareUrl("ref", c)
+  );
+}
 async function loadProfile(){
  if(!user)return;const {data}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
  if(data){$("profileName").value=data.name||user.user_metadata?.name||"";$("profileEmail").value=data.email||user.email||"";$("profilePhone").value=data.phone||user.phone||"";$("profileCity").value=data.city||"";$("profileAbout").value=data.about||"";if(data.avatar_url){$("profileAvatar").src=data.avatar_url;if($("topProfileAvatar"))$("topProfileAvatar").src=data.avatar_url}}
@@ -726,8 +802,36 @@ async function toggleBusinessPublic(){
  const next=biz.is_public===true?false:true; const {error}=await supabaseClient.from("businesses").update({is_public:next}).eq("id",biz.id).eq("owner_id",user.id);
  $("bmBizMessage").textContent=error?"SQL ya businesses igomba kuba ifite is_public: "+error.message:(next?"Business iri PUBLIC.":"Business yakuwe PUBLIC.");
 }
-async function shareBusinessProfile(){const biz=await getMyBusiness();if(!biz){alert("Nta Business Account.");return}shareItem(biz.name||"Trcose Business",location.href.split("?")[0]+"?business="+encodeURIComponent(biz.id))}
-async function createBusinessJob(){
+
+async function shareBusinessProfile(){
+  if(!user){
+    openAuth();
+    return;
+  }
+
+  try {
+    const biz = await getMyBusiness();
+
+    if(!biz || !biz.id){
+      alert("Nta Business Account ibonetse kuri konti yawe.");
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    url.searchParams.set("business", String(biz.id));
+
+    shareItem(
+      biz.name || "Trcose Business",
+      url.toString()
+    );
+  } catch (error) {
+    console.error("Business profile sharing error:", error);
+    alert("Ntibyashobotse gukora link ya Business Account. Ongera ugerageze.");
+  }
+}
+    async function createBusinessJob(){
  if(!user){openAuth();return} const title=$("bmJobTitle").value.trim(); if(!title){$("bmJobMessage").textContent="Andika job title.";return}
  const row={owner_id:user.id,title,company:$("bmJobCompany").value.trim(),location:$("bmJobLocation").value.trim(),job_type:$("bmJobType").value,salary:$("bmJobSalary").value.trim(),description:$("bmJobDescription").value.trim(),status:"pending_payment",is_public:false};
  const {data,error}=await supabaseClient.from("jobs").insert(row).select().single(); if(error){$("bmJobMessage").textContent="Jobs table/columns ntibirahuza: "+error.message;return}
@@ -736,7 +840,20 @@ async function createBusinessJob(){
 async function setMyJobProfilePublic(v){
  if(!user){openAuth();return} const {error}=await supabaseClient.from("job_profiles").update({is_public:v}).eq("user_id",user.id);$("bmProfileMessage").textContent=error?"Job profile public setting isaba column is_public muri SQL v2: "+error.message:(v?"Job Profile iri PUBLIC.":"Job Profile yakuwe PUBLIC.");
 }
-async function shareMyJobProfile(){if(!user){openAuth();return}shareItem("Trcose Job Profile",location.href.split("?")[0]+"?jobprofile="+encodeURIComponent(user.id))}
+
+async function shareMyJobProfile(){
+  if(!user){
+    openAuth();
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set("jobprofile", user.id);
+
+  shareItem("Trcose Job Profile", url.toString());
+}
 async function loadBusinessExamReview(){
  if(!user){openAuth();return} const box=$("bmExamReview");box.innerHTML="⏳ Loading...";
  const {data,error}=await supabaseClient.from("exam_results").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(20);
