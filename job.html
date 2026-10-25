@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#1769ff">
-<title>Trcose Job Portal</title>
+<title>Trcose — Job Portal</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
@@ -241,7 +241,13 @@ html, body { top:0 !important; margin-top:0 !important; }
   <div class="smallgrid"><input id="publicJobLocation" placeholder="Aho akazi gaherereye"><input id="publicJobSalary" placeholder="Umushahara (RWF)"></div>
   <div class="smallgrid"><select id="publicJobType"><option>Full time</option><option>Part time</option><option>Contract</option><option>Internship</option><option>Remote</option><option>Temporary</option></select><input id="publicJobDeadline" type="date" aria-label="Deadline"></div>
   <textarea id="publicJobDescription" placeholder="Sobanura akazi n'inshingano *"></textarea><input id="publicJobRequirements" placeholder="Skills / ibyo usaba agomba kuba azi"><input id="publicJobApplyUrl" type="url" placeholder="Link yo gusaba akazi (optional)">
-  <label for="publicJobMedia"><b>🖼️🎥 Ongeraho ifoto cyangwa video</b></label><input id="publicJobMedia" type="file" accept="image/*,video/*" onchange="previewJobMedia(event)"><div id="publicJobMediaPreview"></div>
+  <div class="job-upload-area" style="margin-top:12px;padding:12px;border:1px dashed #1769ff;border-radius:12px;background:rgba(23,105,255,.05)">
+  <b style="display:block;margin-bottom:8px">🖼️🎥 Ongeraho ifoto cyangwa video y'akazi</b>
+  <input id="publicJobMedia" type="file" accept="image/*,video/*" onchange="previewJobMedia(event)" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0" aria-label="Hitamo ifoto cyangwa video y'akazi">
+  <label for="publicJobMedia" role="button" tabindex="0" style="display:inline-block;background:#1769ff;color:#fff;padding:11px 16px;border-radius:9px;font-weight:700;cursor:pointer">📁 Hitamo file muri telefoni</label>
+  <p class="muted" style="margin:8px 0 0;font-size:13px">Kanda kuri buto, uhitemo ifoto cyangwa video muri telefoni yawe (ntibirenge 50 MB).</p>
+  <div id="publicJobMediaPreview" style="margin-top:10px"></div>
+</div>
   <div class="smallgrid"><button onclick="publishJobPost()">💾 Bika akazi</button><button class="secondary" onclick="clearJobPostForm()">Siba ibyo wanditse</button></div><p id="publicJobPostMessage" class="muted"></p>
  </div>
  <div class="panel"><h3>🔎 Shakisha akazi</h3><div class="smallgrid"><input id="jobSearchInput" placeholder="Shakisha izina, ikigo cyangwa skills..." oninput="renderPublicJobs()"><select id="jobTypeFilter" onchange="renderPublicJobs()"><option value="">Ubwoko bwose</option><option>Full time</option><option>Part time</option><option>Contract</option><option>Internship</option><option>Remote</option><option>Temporary</option></select></div><div id="publicJobList"><p class="muted">Turimo gushaka akazi...</p></div></div>
@@ -264,7 +270,7 @@ html, body { top:0 !important; margin-top:0 !important; }
  <div id="examPanel" class="panel hidden"> <h3>📝 <span data-i18n="online_exam">Online Exam</span></h3> <p class="notice"> Exam zigaragara hano iyo Admin yazishyize PUBLIC. </p> <div id="publicExamList"> <p class="muted">Loading exams...</p> </div> </div>
   <h3>📝 Online Exam</h3>
   <p class="notice">Ikizamini gifunguka gusa iyo payment yacyo yemejwe kandi hashize amasaha 24.</p>
-  <button onclick="startPayment('exam',8)">💳 Pay $8 → Prepare Exam Job</button>
+  <button type="button" onclick="alert('Banza usabe akazi. Nyuma y’uko Admin yakwemeye, kanda Yego kugira ngo usabe ikizami cya 8,000 RWF.')">🔒 Exam ifunguka nyuma yo kwemezwa</button>
   <div id="examWaiting" class="hidden notice"></div>
   <button id="examButton" class="hidden" onclick="openExam()">🔐 Fungura Exam</button>
  </div>
@@ -427,13 +433,14 @@ html, body { top:0 !important; margin-top:0 !important; }
 </main>
 
 <div id="authModal" class="modal"><div class="modalbox"><div class="loginBox" style="background:linear-gradient(135deg,#0750d8,#1769ff);color:#fff;border-radius:20px;padding:18px">
- <h2>🔐 Kwinjira muri Trcose</h2><button style="width:100%" onclick="googleLogin()">🔵 Continue with Google</button><hr>
- <input id="authEmail" type="email" placeholder="Email"><input id="authPassword" type="password" placeholder="Password">
- <button onclick="emailLogin()">📧 Injira</button><button class="secondary" onclick="emailSignup()">📝 Sign Up</button><hr>
- <input id="authPhone" placeholder="+2507..."><button class="secondary" onclick="sendPhoneOTP()">📱 Ohereza OTP</button>
- <input id="authOtp" placeholder="6-digit OTP"><button onclick="verifyPhoneOTP()">✅ Verify OTP</button>
- <p id="authMessage" class="muted"></p><button class="danger" onclick="closeAuth()">Funga</button>
+ <h2>🔐 Kwinjira muri Trcose</h2>
+ <button class="googleLoginBtn" style="width:100%;background:#fff;color:#263238;border:1px solid #dfe3e8;display:flex;align-items:center;justify-content:center;gap:10px" onclick="googleLogin()"><span aria-hidden="true" style="font-size:23px;font-weight:900;background:conic-gradient(from -45deg,#4285F4 0 25%,#34A853 25% 48%,#FBBC05 48% 70%,#EA4335 70% 86%,#4285F4 86%);color:transparent;background-clip:text;-webkit-background-clip:text">G</span><span>Continue with Google</span></button><hr>
+ <input id="authEmail" type="email" placeholder="Email" autocomplete="email"><input id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+ <button onclick="emailLogin()">📧 Injira</button><button class="secondary" onclick="emailSignup()">📝 Sign Up</button>
+ <button type="button" class="secondary" style="width:100%;margin-top:8px" onclick="sendPasswordReset()">Forgot password? / Wibagiwe ijambo ry’ibanga?</button>
+ <p id="authMessage" class="muted" role="status" aria-live="polite"></p><button class="danger" onclick="closeAuth()">Funga</button>
 </div></div></div>
+<div id="passwordResetModal" class="modal"><div class="modalbox"><h2>🔐 Reset Password</h2><p>Andika ijambo ry’ibanga rishya.</p><input id="newPassword" type="password" minlength="6" autocomplete="new-password" placeholder="New password (at least 6 characters)"><input id="confirmNewPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Confirm new password"><p id="passwordResetMessage" class="muted" role="status" aria-live="polite"></p><button onclick="saveNewPassword()">Save new password</button><button class="secondary" onclick="closeModal('passwordResetModal')">Cancel</button></div></div>
 
 <div id="paymentModal" class="modal"><div class="modalbox"><h2>💳 Kwishyura</h2><p id="paymentDescription"></p>
  <div class="panel"><label><input type="radio" name="paymentMethod" value="mtn" checked> MTN Mobile Money</label>
@@ -506,7 +513,7 @@ async function updateAdminUI(){$("adminNavBtn").style.display=await isTrcoseAdmi
 async function refreshUser(){const {data}=await supabaseClient.auth.getUser();user=data.user||null;await updateAdminUI();if(user){await loadProfile();await loadWallet()}}
 async function init(){
  const {data}=await supabaseClient.auth.getSession();user=data.session?.user||null;await updateAdminUI();
- supabaseClient.auth.onAuthStateChange((_event,session)=>{user=session?.user||null;setTimeout(async()=>{await updateAdminUI();if(user)await loadProfile();renderProducts()},0)});
+ supabaseClient.auth.onAuthStateChange((event,session)=>{user=session?.user||null;if(event==="PASSWORD_RECOVERY"){setTimeout(()=>{$("passwordResetModal")?.classList.add("show")},0)}setTimeout(async()=>{await updateAdminUI();if(user){await loadProfile()}renderProducts()},0)});
  await loadProducts();renderProducts();if(user){await loadProfile();await refreshJobAccess();await refreshExamAccess()}
  loadPublicAds();
  const sharedJobId=new URLSearchParams(location.search).get("job");
@@ -531,6 +538,27 @@ async function emailLogin(){
  setLoginLoading(true);const {error}=await supabaseClient.auth.signInWithPassword({email,password});
  if(error)$("authMessage").textContent=error.message;else closeAuth();setLoginLoading(false)
 }
+async function sendPasswordReset(){
+ const email=$("authEmail").value.trim();
+ if(!email){$("authMessage").textContent="Banza wandike email ya konti yawe.";$("authEmail").focus();return}
+ setLoginLoading(true);
+ const redirectTo=window.location.origin+window.location.pathname;
+ const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+ $("authMessage").textContent=error?("Reset password failed: "+error.message):"Niba iyi email ifite konti, twohereje link yo guhindura password. Reba Inbox na Spam.";
+ setLoginLoading(false);
+}
+async function saveNewPassword(){
+ const password=$("newPassword").value,confirmPassword=$("confirmNewPassword").value,msg=$("passwordResetMessage");
+ if(password.length<6){msg.textContent="Password igomba kugira nibura inyuguti 6.";return}
+ if(password!==confirmPassword){msg.textContent="Password zombi ntizihuye.";return}
+ msg.textContent="Turimo kubika password nshya...";
+ const {error}=await supabaseClient.auth.updateUser({password});
+ if(error){msg.textContent="Ntibyashobotse: "+error.message;return}
+ msg.textContent="Password yahinduwe neza. Urashobora kwinjira ukoresheje password nshya.";
+ $("newPassword").value="";$("confirmNewPassword").value="";
+ setTimeout(async()=>{closeModal("passwordResetModal");await supabaseClient.auth.signOut();user=null;openAuth()},1200);
+}
+
 async function sendPhoneOTP(){
  const phone=$("authPhone").value.trim();if(!phone){$("authMessage").textContent="Andika phone nka +2507...";return}
  setLoginLoading(true);const {error}=await supabaseClient.auth.signInWithOtp({phone});$("authMessage").textContent=error?error.message:"OTP yoherejwe.";setLoginLoading(false)
@@ -599,9 +627,31 @@ async function likeProduct(id){
  if(data)await supabaseClient.from("product_likes").delete().eq("id",data.id);else await supabaseClient.from("product_likes").insert({product_id:id,user_id:user.id})
 }
 function buyProduct(id){const p=products.find(x=>x.id===id)||demoProducts.find(x=>x.id===id);if(!p)return;if(!user){openAuth();return}if(String(id).startsWith("demo")){alert("Iyi ni demo product. Shyiraho product nyayo.");return}startPayment("order",Number(p.price),p.id)}
-function shareItem(title,url){try{if(navigator.share){navigator.share({title,text:title,url});return}navigator.clipboard?.writeText(url);alert("Link yakopiwe.")}catch(e){}}
-function shareProduct(id){const p=products.find(x=>x.id===id)||demoProducts.find(x=>x.id===id);if(p)shareItem(p.name||"Trcose Product",location.href.split("?")[0]+"?product="+encodeURIComponent(id))}
-function shareReferral(){const c=$("myReferralCode")?.textContent?.trim()||"";shareItem("Trcose Referral "+c,location.href.split("?")[0]+"?ref="+encodeURIComponent(c))}
+async function shareItem(title,url){
+ const safeTitle=String(title||"Trcose Market");
+ const safeUrl=String(url||location.href);
+ try{
+  if(navigator.share){await navigator.share({title:safeTitle,text:safeTitle,url:safeUrl});return}
+ }catch(e){if(e&&e.name==="AbortError")return;}
+ try{
+  if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(safeUrl);alert("Link yakopiwe. Ushobora kuyishyira kuri WhatsApp cyangwa ahandi.");return;}
+  const ta=document.createElement("textarea");ta.value=safeUrl;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();
+  if(ok){alert("Link yakopiwe. Ushobora kuyishyira kuri WhatsApp cyangwa ahandi.");return;}
+ }catch(e){}
+ prompt("Kopora link ya Trcose:",safeUrl);
+}
+function shareProduct(id){
+ const p=products.find(x=>String(x.id)===String(id))||demoProducts.find(x=>String(x.id)===String(id));
+ if(!p){alert("Igicuruzwa nticyabonetse.");return;}
+ const url=new URL("https://market-co.github.io/Trcose/");url.searchParams.set("product",String(p.id));
+ shareItem(p.name||"Trcose Product",url.href);
+}
+function shareReferral(){
+ const c=$("myReferralCode")?.textContent?.trim()||"";
+ if(!c){alert("Referral code ntiboneka.");return;}
+ const url=new URL("https://market-co.github.io/Trcose/");url.searchParams.set("ref",c);
+ shareItem("Trcose Referral "+c,url.href);
+}
 
 async function loadProfile(){
  if(!user)return;const {data}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
@@ -656,10 +706,13 @@ async function refreshJobAccess(){
 }
 function showJobs(){$("jobResults").classList.remove("hidden");$("jobList").innerHTML=demoJobs.map(j=>`<div class="listrow"><b>${escapeHTML(j.title)}</b><br><span class="muted">${escapeHTML(j.location)} · ${escapeHTML(j.type)} ${j.salary?"· "+escapeHTML(j.salary):""}</span></div>`).join("");$("examPanel").classList.remove("hidden")}
 async function refreshExamAccess(){
- if(!user)return;const {data,error}=await supabaseClient.rpc("exam_access_status",{p_user_id:user.id});$("examPanel").classList.remove("hidden");
- if(error){$("examWaiting").classList.remove("hidden");$("examWaiting").textContent="Exam access status ntibashije kuboneka. Reba SQL setup.";return}
- if(data?.can_open===true){$("examWaiting").classList.add("hidden");$("examButton").classList.remove("hidden")}
- else{$("examButton").classList.add("hidden");$("examWaiting").classList.remove("hidden");$("examWaiting").textContent=data?.message||"Exam izafunguka nyuma y'amasaha 24 payment imaze verified."}
+ if(!user)return;$("examPanel")?.classList.remove("hidden");
+ const {data:jobApps}=await supabaseClient.from("job_applications").select("job_id,status,applicant_confirmed").eq("applicant_id",user.id).eq("status","accepted");
+ let jobExamUnlocked=false;
+ for(const a of (jobApps||[])){if(!a.applicant_confirmed)continue;const {data:pay}=await supabaseClient.from("payments").select("id").eq("user_id",user.id).eq("purpose","job_exam").eq("job_id",a.job_id).eq("status","verified").limit(1);if(pay?.length){jobExamUnlocked=true;break;}}
+ const {data,error}=await supabaseClient.rpc("exam_access_status",{p_user_id:user.id});
+ if(jobExamUnlocked||(!error&&data?.can_open===true)){$("examWaiting")?.classList.add("hidden");$("examButton")?.classList.remove("hidden");}
+ else{$("examButton")?.classList.add("hidden");$("examWaiting")?.classList.remove("hidden");if($("examWaiting"))$("examWaiting").textContent=data?.message||"Ikizami gifunguka nyuma y’uko Admin yemeje payment ya 8,000 RWF.";}
 }
 function openExam(){refreshExamAccess().then(()=>{if(!$("examButton").classList.contains("hidden"))$("examModal").classList.add("show")})}
 async function submitExam(){
@@ -675,29 +728,34 @@ async function saveJobProfile(){
 }
 
 let publicJobsCache=[],jobMediaFile=null;
+document.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target?.matches?.('label[for="publicJobMedia"]')){e.preventDefault();$("publicJobMedia")?.click()}});
 function previewJobMedia(e){jobMediaFile=e.target.files?.[0]||null;const box=$("publicJobMediaPreview");box.innerHTML="";if(!jobMediaFile)return;if(jobMediaFile.size>50*1024*1024){box.textContent="File irenze 50 MB.";jobMediaFile=null;e.target.value="";return}const u=URL.createObjectURL(jobMediaFile);box.innerHTML=jobMediaFile.type.startsWith("video/")?`<video class="media" controls src="${u}"></video>`:`<img class="media" src="${u}" alt="Job preview">`}
 function clearJobPostForm(){["publicJobTitle","publicJobCompany","publicJobLocation","publicJobSalary","publicJobDeadline","publicJobDescription","publicJobRequirements","publicJobApplyUrl"].forEach(id=>$(id).value="");$("publicJobMedia").value="";$("publicJobMediaPreview").innerHTML="";jobMediaFile=null}
 async function uploadJobMedia(){if(!jobMediaFile)return{url:"",type:""};const ext=(jobMediaFile.name.split(".").pop()||"bin").toLowerCase(),path=`jobs/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await supabaseClient.storage.from("job-media").upload(path,jobMediaFile);if(error)throw new Error("Upload yanze. Reba bucket job-media na Storage policies: "+error.message);return{url:supabaseClient.storage.from("job-media").getPublicUrl(path).data.publicUrl,type:jobMediaFile.type.startsWith("video/")?"video":"image"}}
 async function publishJobPost(){if(!user){openAuth();return}const title=$("publicJobTitle").value.trim(),description=$("publicJobDescription").value.trim(),msg=$("publicJobPostMessage");if(!title||!description){msg.textContent="Uzuza izina ry'akazi n'ibisobanuro.";return}msg.textContent="Turimo kubika akazi...";try{const media=await uploadJobMedia();const row={user_id:user.id,title,company:$("publicJobCompany").value.trim(),location:$("publicJobLocation").value.trim(),job_type:$("publicJobType").value,salary:$("publicJobSalary").value.trim(),description,requirements:$("publicJobRequirements").value.trim()||null,deadline:$("publicJobDeadline").value||null,apply_url:$("publicJobApplyUrl").value.trim()||null,media_url:media.url||null,media_type:media.type||null,status:"pending_payment",is_public:false};const {data,error}=await supabaseClient.from("jobs").insert(row).select().single();if(error){msg.textContent="Akazi ntikabitswe: "+error.message+" Reba columns z'inyongera muri jobs table.";return}msg.textContent="Akazi kabitswe private. Noneho kora payment ya 2,000 RWF; Admin azabona payment ifitanye isano na Job ID: "+data.id+".";clearJobPostForm();paymentPurpose={type:"job_posting",productId:data.id,amount:2000};$("paymentDescription").innerHTML=`Payment: <b>Job posting</b><br>Amount: <b>${money(2000)}</b><br>Job ID: <b>${escapeHTML(data.id)}</b>`;$("paymentMessage").textContent="";$("paymentModal").classList.add("show");await loadPublicJobs()}catch(e){msg.textContent=e.message||"Habaye ikibazo."}}
 async function loadPublicJobs(){
  const box=$("publicJobList");
- if(box)box.innerHTML="Turimo gushaka akazi...";
+ if(!box)return;
+ box.innerHTML="Turimo gushaka akazi...";
  const {data,error}=await supabaseClient.from("jobs").select("*").eq("is_public",true).order("created_at",{ascending:false}).limit(100);
- if(error){if(box)box.innerHTML=`<div class="error">Jobs ntizapakiwe: ${escapeHTML(error.message)}</div>`;return}
+ if(error){box.innerHTML=`<div class="error">Jobs ntizapakiwe: ${escapeHTML(error.message)}</div>`;return;}
  publicJobsCache=data||[];
  renderPublicJobs();
  const id=new URLSearchParams(location.search).get("job");
  if(!id)return;
  const found=publicJobsCache.find(j=>String(j.id)===String(id));
- if(found){openJobDetails(id);return}
- const detail=$("jobDetailContent");
- if(detail)detail.innerHTML='<div class="error"><h3>Akazi ntikabonetse</h3><p>Aka kazi ntikari public cyangwa ntikemejwe na Admin. Saba umukoresha cyangwa Admin kugenzura ubwishyu.</p></div>';
+ if(found){openJobDetails(id);return;}
+ // Shared jobs are only retrievable when still public; never expose private/unapproved jobs.
+ const {data:direct,error:directError}=await supabaseClient.from("jobs").select("*").eq("id",id).eq("is_public",true).maybeSingle();
+ if(direct){publicJobsCache.unshift(direct);openJobDetails(id);return;}
+ const content=$("jobDetailContent");
+ if(content)content.innerHTML='<p class="error">Akazi ntikabonetse, ntikari public cyangwa ntikemejwe na Admin.</p>';
  $("jobDetailPanel")?.classList.remove("hidden");
 }
 function renderPublicJobs(){const box=$("publicJobList");if(!box)return;const q=($("jobSearchInput")?.value||"").trim().toLowerCase(),type=$("jobTypeFilter")?.value||"";const list=publicJobsCache.filter(j=>(!type||j.job_type===type)&&(!q||[j.title,j.company,j.location,j.description,j.requirements,j.salary].join(" ").toLowerCase().includes(q)));box.innerHTML=list.length?list.map(j=>`<div class="listrow"><div style="display:flex;gap:12px;flex-wrap:wrap">${j.media_url?(j.media_type==="video"?`<video controls style="width:120px;max-height:100px" src="${escapeHTML(j.media_url)}"></video>`:`<img style="width:120px;height:90px;object-fit:cover;border-radius:10px" src="${escapeHTML(j.media_url)}" alt="">`):""}<div style="flex:1"><span class="badge">${escapeHTML(j.job_type||"Job")}</span><h3>${escapeHTML(j.title)}</h3><b>${escapeHTML(j.company||"Employer")}</b><p class="muted">📍 ${escapeHTML(j.location||"Ntabigaragajwe")} ${j.salary?" · "+escapeHTML(j.salary):""}</p><p>${escapeHTML((j.description||"").slice(0,180))}</p><button onclick="openJobDetails('${j.id}')">👀 Reba akazi</button> <button class="secondary" onclick="shareJob('${j.id}')">↗️ Share</button></div></div></div>`).join(""):'<p class="muted">Nta kazi public kabonetse.</p>'}
 function openJobDetails(id){
  const j=publicJobsCache.find(x=>String(x.id)===String(id));
- if(!j){const m=$("jobDetailContent");if(m)m.innerHTML='<p class="error">Akazi ntikabonetse cyangwa ntikiri public.</p>';$ ("jobDetailPanel")?.classList.remove("hidden");return}
+ if(!j){const m=$("jobDetailContent");if(m)m.innerHTML='<p class="error">Akazi ntikabonetse cyangwa ntikiri public.</p>';$("jobDetailPanel")?.classList.remove("hidden");return}
  const url=jobShareUrl(id);
  const owner=!!(user&&String(user.id)===String(j.user_id));
  $("jobDetailContent").innerHTML=`
@@ -707,68 +765,113 @@ function openJobDetails(id){
  <p>📍 ${escapeHTML(j.location||"Ntabigaragajwe")}</p>
  <p class="price">${escapeHTML(j.salary||"Umushahara nturagaragazwa")}</p>
  <h3>Ibisobanuro by'akazi</h3><p style="white-space:pre-wrap">${escapeHTML(j.description||"Nta bisobanuro byatanzwe.")}</p>
- ${j.requirements?`<h3>Ibisabwa</h3><p style="white-space:pre-wrap">${escapeHTML(j.requirements)}</p>`:""}
- ${j.deadline?`<p><b>Itariki ntarengwa:</b> ${escapeHTML(j.deadline)}</p>`:""}
- <button onclick="applyForJob('${escapeHTML(j.id)}')">📝 Saba akazi</button>
- ${owner?` <button class="secondary" onclick="toggleMyJob('${escapeHTML(j.id)}',${!j.is_public})">${j.is_public?'🙈 Kuramo public':'⏳ Tegereza Admin kwemeza ubwishyu'}</button> <button class="danger" onclick="deleteMyJob('${escapeHTML(j.id)}')">🗑️ Siba job</button>`:""}
- <h3>🔗 Sangiza aka kazi</h3><div class="smallgrid">
- <button onclick="shareJobPlatform('whatsapp','${escapeHTML(j.id)}')">WhatsApp</button>
- <button onclick="shareJobPlatform('facebook','${escapeHTML(j.id)}')">Facebook</button>
- <button onclick="shareJobPlatform('telegram','${escapeHTML(j.id)}')">Telegram</button>
- <button class="secondary" onclick="copyJobLink('${escapeHTML(j.id)}')">📋 Copy Link</button></div>
+ ${j.requirements?`<h3>Requirements / Ibisabwa</h3><p style="white-space:pre-wrap">${escapeHTML(j.requirements)}</p>`:""}
+ ${j.deadline?`<p><b>Deadline:</b> ${escapeHTML(j.deadline)}</p>`:""}
+ <button onclick="applyForJob('${escapeHTML(j.id)}')">📝 Saba akazi / Apply for this job</button>
+ ${j.apply_url?`<p class="muted">Cyangwa ukoreshe external application link: <a href="${escapeHTML(j.apply_url)}" target="_blank" rel="noopener noreferrer">Open application link</a></p>`:""}
+ ${owner?` <button class="secondary" onclick="toggleMyJob('${escapeHTML(j.id)}',${!j.is_public})">${j.is_public?'🙈 Kuramo public':'🌐 Shyira public'}</button> <button class="danger" onclick="deleteMyJob('${escapeHTML(j.id)}')">🗑️ Siba job</button>`:""}
+ <h3>🔗 Sangiza aka kazi</h3><div class="smallgrid"><button onclick="shareJobPlatform('whatsapp','${escapeHTML(j.id)}')">WhatsApp</button><button onclick="shareJobPlatform('facebook','${escapeHTML(j.id)}')">Facebook</button><button onclick="shareJobPlatform('telegram','${escapeHTML(j.id)}')">Telegram</button><button class="secondary" onclick="copyJobLink('${escapeHTML(j.id)}')">📋 Copy Link</button></div>
  <p class="muted" style="overflow-wrap:anywhere">${escapeHTML(url)}</p>
  <div id="jobApplyMessage" class="muted"></div>`;
  $("jobDetailPanel").classList.remove("hidden");
  $("jobDetailPanel").scrollIntoView({behavior:"smooth"});
 }
-async function toggleMyJob(id,makePublic){
- if(!user){openAuth();return}
- if(makePublic){alert("Akazi ntigashobora gushyirwa public n'umukoresha wenyine. Admin agomba kubanza kwemeza payment ya 2,000 RWF ihujwe n'iyi Job ID.");return}
- const {data,error}=await supabaseClient.from("jobs").update({is_public:false,status:"hidden"}).eq("id",id).eq("user_id",user.id).select().maybeSingle();
- if(error||!data){alert("Ntibyashobotse gukura job kuri public. Reba RLS policies za jobs.");return}
- await loadPublicJobs();alert("Job yakuwe public.");closeJobDetails();
-}
-async function deleteMyJob(id){if(!user||!confirm("Urasiba aka kazi burundu?"))return;const {data,error}=await supabaseClient.from("jobs").delete().eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse gusiba job. Reba RLS policies za jobs.");return}await loadPublicJobs();alert("Job yasibwe.");closeJobDetails()}
+async function toggleMyJob(id,makePublic){if(!user){openAuth();return}const {data,error}=await supabaseClient.from("jobs").update({is_public:!!makePublic,status:makePublic?"published":"hidden"}).eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse guhindura public/private. Reba RLS policies za jobs.");return}await loadPublicJobs();alert(makePublic?"Job yashyizwe public.":"Job yakuwe public.");closeJobDetails()}async function deleteMyJob(id){if(!user||!confirm("Urasiba aka kazi burundu?"))return;const {data,error}=await supabaseClient.from("jobs").delete().eq("id",id).eq("user_id",user.id).select().maybeSingle();if(error||!data){alert("Ntibyashobotse gusiba job. Reba RLS policies za jobs.");return}await loadPublicJobs();alert("Job yasibwe.");closeJobDetails()}
 function closeJobDetails(){$("jobDetailPanel").classList.add("hidden");if(new URLSearchParams(location.search).has("job"))history.replaceState({},"",location.pathname)}
-function jobShareUrl(id){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("job",String(id));return u.toString()}
+function jobShareUrl(id){
+ const u=new URL("https://market-co.github.io/Trcose/job.html");
+ u.searchParams.set("job",String(id));
+ return u.toString();
+}
 function shareJob(id){const j=publicJobsCache.find(x=>String(x.id)===String(id));const url=jobShareUrl(id);shareItem(j?.title||"Trcose Job",url)}
 function shareJobPlatform(platform,id){const j=publicJobsCache.find(x=>String(x.id)===String(id));const url=jobShareUrl(id);const title=j?.title||"Job opportunity on Trcose";const text=`${title} — Reba aka kazi kuri Trcose: ${url}`;let target="";if(platform==="whatsapp")target="https://wa.me/?text="+encodeURIComponent(text);else if(platform==="facebook")target="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(url);else if(platform==="telegram")target="https://t.me/share/url?url="+encodeURIComponent(url)+"&text="+encodeURIComponent(title);if(target)window.open(target,"_blank","noopener,noreferrer")}
 async function copyJobLink(id){const url=jobShareUrl(id);try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url)}else{const ta=document.createElement("textarea");ta.value=url;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}alert("Link y'akazi yakopiwe. Yishyire kuri WhatsApp, Facebook, Telegram cyangwa ahandi.")}catch(e){prompt("Kopora link y'akazi:",url)}}
 async function applyForJob(id){
  const j=publicJobsCache.find(x=>String(x.id)===String(id));
- if(!j){alert("Akazi ntikabonetse cyangwa ntikiri public.");return}
- if(j.apply_url){window.open(j.apply_url,"_blank","noopener,noreferrer");return}
- if(!user){openAuth();return}
- const box=$("jobApplyMessage");
- if(!box)return;
- box.innerHTML=`<div class="panel" style="margin-top:12px;padding:14px">
- <h3>📝 Gusaba aka kazi</h3>
- <label>Amazina yawe *</label><input id="jobAppName" autocomplete="name" value="${escapeHTML(user.user_metadata?.full_name||user.user_metadata?.name||"")}" placeholder="Amazina yose" required>
- <label>Email *</label><input id="jobAppEmail" type="email" autocomplete="email" value="${escapeHTML(user.email||"")}" placeholder="Email yawe" required>
- <label>Telefoni</label><input id="jobAppPhone" type="tel" autocomplete="tel" placeholder="+250...">
- <label>Ubutumwa bwo gusaba akazi</label><textarea id="jobAppLetter" rows="4" placeholder="Sobanura impamvu ukwiriye aka kazi"></textarea>
- <label>Link ya CV (niba uyifite)</label><input id="jobAppResume" type="url" placeholder="https://...">
- <button onclick="submitJobApplication('${escapeHTML(j.id)}')">Ohereza ubusabe</button>
- <button class="secondary" onclick="document.getElementById('jobApplyMessage').innerHTML=''">Funga</button>
- </div>`;
+ if(!j){alert("Akazi ntikabonetse cyangwa ntikiri public.");return;}
+ if(!user){openAuth();return;}
+ const box=$("jobApplyMessage"); if(!box)return;
+ box.innerHTML=`<div class="panel" style="margin-top:12px;padding:14px;border:1px solid #dbe5f5;border-radius:12px"><h3>📝 Saba akazi / Apply for this job</h3><p><b>${escapeHTML(j.title||"Akazi")}</b> · ${escapeHTML(j.company||"")}</p><p class="notice">Amafaranga yo gusaba akazi ni <b>1,000 RWF</b>. Banza usabe ubwishyu, wishyure, hanyuma Admin yemeze payment mbere yo kohereza ubusabe.</p><div id="jobApplicationPaymentBox"><label>Uburyo bwo kwishyura</label><select id="jobApplicationMethod"><option value="mtn">MTN Mobile Money</option><option value="equity">Equity Bank</option><option value="manual">Ubundi buryo / Manual</option></select><button type="button" onclick="requestJobApplicationPayment('${escapeHTML(j.id)}')">💳 Saba kwishyura 1,000 RWF</button><div id="jobApplicationPaymentMessage" class="muted"></div></div><div id="jobApplicationFormFields" class="hidden"><hr><h4>Amakuru yo gusaba akazi</h4><label>Amazina yose *</label><input id="jobAppName" autocomplete="name" value="${escapeHTML(user.user_metadata?.full_name||user.user_metadata?.name||"")}" placeholder="Amazina yose"><label>Email *</label><input id="jobAppEmail" type="email" autocomplete="email" value="${escapeHTML(user.email||"")}" placeholder="Email"><label>Telephone</label><input id="jobAppPhone" type="tel" autocomplete="tel" placeholder="+250..."><label>Ubutumwa busaba akazi</label><textarea id="jobAppLetter" rows="4" placeholder="Sobanura impamvu ukwiye aka kazi"></textarea><label>CV link (niba uyifite)</label><input id="jobAppResume" type="url" placeholder="https://..."><button type="button" onclick="submitJobApplication('${escapeHTML(j.id)}')">📨 Ohereza ubusabe</button></div><div id="jobApplicationMyStatus"></div><button type="button" class="secondary" onclick="refreshMyJobApplications('${escapeHTML(j.id)}')">🔄 Reba status y’ubusabe</button><button type="button" class="secondary" onclick="document.getElementById('jobApplyMessage').innerHTML=''">Funga</button></div>`;
+ box.scrollIntoView({behavior:"smooth",block:"start"});
+ await refreshMyJobApplications(j.id);
 }
+async function requestJobApplicationPayment(jobId){
+ if(!user){openAuth();return;}
+ const msg=$("jobApplicationPaymentMessage"); const method=$("jobApplicationMethod")?.value||"mtn";
+ const {data:existing,error:existingError}=await supabaseClient.from("payments").select("id,status,transaction_reference,created_at").eq("user_id",user.id).eq("purpose","job_application").eq("job_id",jobId).order("created_at",{ascending:false}).limit(1);
+ if(existingError){if(msg)msg.innerHTML=`<span class="error">${escapeHTML(existingError.message)}</span>`;return;}
+ if(existing?.[0]?.status==="verified"){$("jobApplicationFormFields")?.classList.remove("hidden");if(msg)msg.innerHTML='<span class="success">Payment yemejwe. Uzuza ifishi ikurikira.</span>';return;}
+ if(existing?.[0]?.status==="pending") {if(msg)msg.innerHTML=`<div class="notice">Payment request yawe iracyategereje Admin. Reference: <b>${escapeHTML(existing[0].transaction_reference||existing[0].id)}</b>. Umaze kwishyura, tegereza Admin ayigenzure, hanyuma ukande “Reba status y’ubusabe”.</div><button type="button" onclick="startJobMobilePayment('${method}')">📱 Fungura MTN / payment</button>`;return;}
+ const reference="TRCOSE-JOBAPP-"+Date.now()+"-"+Math.random().toString(36).slice(2,7).toUpperCase();
+ const {data,error}=await supabaseClient.from("payments").insert({user_id:user.id,purpose:"job_application",amount:1000,method,status:"pending",transaction_reference:reference,job_id:jobId}).select("id,transaction_reference,status").single();
+ if(error){if(msg)msg.innerHTML=`<div class="error">Payment request ntiyabitswe: ${escapeHTML(error.message)}. Reba ko payments.job_id ihari.</div>`;return;}
+ if(msg)msg.innerHTML=`<div class="success">Payment request yabitswe. Reference: <b>${escapeHTML(data.transaction_reference||data.id)}</b><p>Kora payment ya 1,000 RWF ukoresheje uburyo wahisemo. Admin agomba kugenzura payment; ubusabe ntibwoherezwa mbere yo kwemezwa.</p></div><button type="button" onclick="startJobMobilePayment('${method}')">📱 Fungura MTN / payment</button><button type="button" class="secondary" onclick="refreshMyJobApplications('${escapeHTML(jobId)}')">🔄 Reba payment status</button>`;
+}
+function startJobMobilePayment(method){if(method==="mtn"){window.location.href="tel:"+encodeURIComponent("*182*8*1*2233481#");}else{alert("Koresha "+(method==="equity"?"Equity Mobile Banking":"uburyo bwishyurirwaho bwemejwe")+" wishyure 1,000 RWF. Hanyuma utegereze Admin akemeza payment.");}}
 async function submitJobApplication(jobId){
- if(!user){openAuth();return}
- const j=publicJobsCache.find(x=>String(x.id)===String(jobId));
- const box=$("jobApplyMessage");
- if(!j||!j.is_public){if(box)box.innerHTML='<p class="error">Aka kazi ntikari public.</p>';return}
- const full_name=$("jobAppName")?.value.trim()||"";
- const email=$("jobAppEmail")?.value.trim()||"";
- const phone=$("jobAppPhone")?.value.trim()||"";
- const cover_letter=$("jobAppLetter")?.value.trim()||"";
- const resume_url=$("jobAppResume")?.value.trim()||"";
- if(!full_name||!email){alert("Uzuza amazina na email.");return}
- if(resume_url){try{new URL(resume_url)}catch(e){alert("CV URL si link yemewe. Reba ko itangirana na https://");return}}
- const btn=box?.querySelector("button");if(btn){btn.disabled=true;btn.textContent="Turimo kohereza..."}
- const payload={job_id:jobId,applicant_id:user.id,full_name,email,phone:phone||null,cover_letter:cover_letter||null,resume_url:resume_url||null,status:"pending"};
+ if(!user){openAuth();return;}
+ const j=publicJobsCache.find(x=>String(x.id)===String(jobId));const box=$("jobApplicationPaymentMessage");
+ if(!j||!j.is_public){if(box)box.innerHTML='<p class="error">This job is no longer public.</p>';return;}
+ const {data:payments,error:payErr}=await supabaseClient.from("payments").select("id,status").eq("user_id",user.id).eq("purpose","job_application").eq("job_id",jobId).eq("status","verified").order("created_at",{ascending:false}).limit(1);
+ if(payErr||!payments?.length){if(box)box.innerHTML=`<div class="error">Ubusabe ntibwoherejwe. Payment ya 1,000 RWF igomba kubanza kwemezwa na Admin.${payErr?" "+escapeHTML(payErr.message):""}</div>`;return;}
+ const full_name=$("jobAppName")?.value.trim()||"", email=$("jobAppEmail")?.value.trim()||"", phone=$("jobAppPhone")?.value.trim()||"", cover_letter=$("jobAppLetter")?.value.trim()||"", resume_url=$("jobAppResume")?.value.trim()||"";
+ if(!full_name||!email){alert("Andika amazina n’email.");return;}
+ if(resume_url){try{const cv=new URL(resume_url);if(!["http:","https:"].includes(cv.protocol))throw new Error("invalid");}catch(e){alert("CV link igomba gutangirana na https://");return;}}
+ const {data:already}=await supabaseClient.from("job_applications").select("id,status").eq("job_id",jobId).eq("applicant_id",user.id).maybeSingle();
+ if(already){if(box)box.innerHTML=`<div class="notice">Usanzwe warasabye aka kazi. Status yawe: <b>${escapeHTML(already.status)}</b>.</div>`;await refreshMyJobApplications(jobId);return;}
+ const payload={job_id:jobId,applicant_id:user.id,full_name,email,phone:phone||null,telephone:phone||null,cover_letter:cover_letter||null,message:cover_letter||null,resume_url:resume_url||null,cv_link:resume_url||null,cv_url:resume_url||null,status:"submitted"};
  const {error}=await supabaseClient.from("job_applications").insert(payload);
- if(error){if(box)box.innerHTML=`<p class="error">Ubusabe ntibwoherejwe: ${escapeHTML(error.message)}. Niba ari ikibazo cya table/policies, banza ukore SQL ya job_applications muri Supabase.</p>`;return}
- if(box)box.innerHTML='<p class="success">✅ Ubusabe bwawe bwoherejwe neza. Umukoresha azabusuzuma.</p>';
+ if(error){if(box)box.innerHTML=`<p class="error">Request nt yoherejwe: ${escapeHTML(error.message)}.</p>`;return;}
+ if(box)box.innerHTML='<p class="success">✅ Ubusabe bwoherejwe. Admin azabusuzuma; uzabona status hano.</p>';
+ await refreshMyJobApplications(jobId);
+}
+async function refreshMyJobApplications(jobId=null){
+ const box=$("jobApplicationMyStatus");if(!box||!user)return;
+ let q=supabaseClient.from("job_applications").select("id,job_id,status,applicant_confirmed,confirmation_message,created_at,jobs(title,company)").eq("applicant_id",user.id).order("created_at",{ascending:false});if(jobId)q=q.eq("job_id",jobId);
+ const {data,error}=await q;if(error){box.innerHTML=`<div class="error">Status ntibonetse: ${escapeHTML(error.message)}</div>`;return;}
+ if(jobId){const {data:appPays}=await supabaseClient.from("payments").select("id,status,transaction_reference").eq("user_id",user.id).eq("purpose","job_application").eq("job_id",jobId).order("created_at",{ascending:false}).limit(1);const ap=appPays?.[0];if(ap?.status==="verified"&&!data?.some(a=>String(a.job_id)===String(jobId))){$("jobApplicationFormFields")?.classList.remove("hidden");const pm=$("jobApplicationPaymentMessage");if(pm)pm.innerHTML='<div class="success">Payment ya 1,000 RWF yemejwe na Admin. Uzuza amakuru yawe, wohereze ubusabe.</div>';}}
+ if(!data?.length){let message='Nta busabe bwoherejwe kuri aka kazi buraboneka.';if(jobId){const {data:pp}=await supabaseClient.from("payments").select("id,status,transaction_reference").eq("user_id",user.id).eq("purpose","job_application").eq("job_id",jobId).order("created_at",{ascending:false}).limit(1);if(pp?.[0]?.status==="pending")message='Payment ya 1,000 RWF irategereje kwemezwa na Admin. Reference: '+(pp[0].transaction_reference||pp[0].id)+'. Nyuma yo kwemezwa, kanda Reba status cyangwa Saba kwishyura nanone.';else if(pp?.[0]?.status==="rejected")message='Payment yangiwe. Ongera utangize payment request ya 1,000 RWF.';}box.innerHTML=`<p class="notice">${escapeHTML(message)}</p>`;return;}
+ const cards=[];
+ for(const a of data){let examPayment=null;const {data:pp}=await supabaseClient.from("payments").select("id,status,transaction_reference").eq("user_id",user.id).eq("purpose","job_exam").eq("job_id",a.job_id).order("created_at",{ascending:false}).limit(1);examPayment=pp?.[0]||null;
+ let action="";
+ if(a.status==="accepted"&&!a.applicant_confirmed){action=`<button class="successBtn" onclick="confirmJobOffer('${a.id}','${a.job_id}')">✅ Yego, ndemeye gukomeza</button>`;}
+ else if(a.status==="accepted"&&a.applicant_confirmed&&examPayment?.status==="verified"){action=`<button onclick="openJobExamAfterVerification('${a.job_id}')">🔓 Fungura ikizami</button>`;}
+ else if(a.status==="accepted"&&a.applicant_confirmed&&examPayment?.status==="pending"){action=`<div class="notice">Payment ya 8,000 RWF irategereje kwemezwa na Admin. Reference: ${escapeHTML(examPayment.transaction_reference||examPayment.id)}</div>`;}
+ else if(a.status==="accepted"&&a.applicant_confirmed&&(!examPayment||examPayment.status==="rejected")){action=`<button onclick="requestJobExamPayment('${a.job_id}')">💳 Ishyura 8,000 RWF kugira ngo ufungurirwe ikizami</button>`;}
+ cards.push(`<div class="panel"><b>${escapeHTML(a.jobs?.title||"Akazi")}</b><p>Status: <span class="status">${escapeHTML(a.status)}</span></p>${a.applicant_confirmed?`<p class="success">Wemeje gukomeza: ${escapeHTML(a.confirmation_message||"Yego, ndakomeza.")}</p>`:""}${action}</div>`);
+ }
+ box.innerHTML=cards.join("");
+}
+async function confirmJobOffer(applicationId,jobId){
+ if(!user)return;
+ const message="Yego, nemeye gukomeza n’iyi application kandi niteguye gukora ikizami nyuma yo kwishyura 8,000 RWF.";
+ const {error}=await supabaseClient.rpc("confirm_job_application",{p_application_id:applicationId,p_message:message});
+ if(error){alert("Ubutumwa ntibwoherejwe: "+error.message+". Reba SQL/policy.");return;}
+ await requestJobExamPayment(jobId);
+}
+async function requestJobExamPayment(jobId){
+ if(!user)return;
+ const {data:existing}=await supabaseClient.from("payments").select("id,status,transaction_reference").eq("user_id",user.id).eq("purpose","job_exam").eq("job_id",jobId).order("created_at",{ascending:false}).limit(1);
+ if(existing?.[0]&&existing[0].status!=="rejected"){alert(existing[0].status==="verified"?"Payment yemejwe. Kanda Refresh status kugira ngo ufungure ikizami.":"Payment request ya 8,000 RWF iracyategereje Admin. Reference: "+(existing[0].transaction_reference||existing[0].id));await refreshMyJobApplications(jobId);return;}
+ const reference="TRCOSE-JOBEXAM-"+Date.now()+"-"+Math.random().toString(36).slice(2,7).toUpperCase();
+ const {data,error}=await supabaseClient.from("payments").insert({user_id:user.id,purpose:"job_exam",amount:8000,method:"mtn",status:"pending",transaction_reference:reference,job_id:jobId}).select("id,transaction_reference").single();
+ if(error){alert("Payment request ntibitswe: "+error.message);return;}
+ alert("Payment request ya 8,000 RWF yabitswe. Reference: "+(data.transaction_reference||data.id)+". Wishyure hanyuma utegereze Admin yemeze payment.");
+ if(confirm("Ushaka gufungura MTN Mobile Money ubu?"))startJobMobilePayment("mtn");
+ await refreshMyJobApplications(jobId);
+}
+async function hasVerifiedJobExamAccess(){
+ if(!user)return false;
+ const {data:apps}=await supabaseClient.from("job_applications").select("job_id,status,applicant_confirmed").eq("applicant_id",user.id).eq("status","accepted");
+ for(const a of (apps||[])){if(!a.applicant_confirmed)continue;const {data:pay}=await supabaseClient.from("payments").select("id").eq("user_id",user.id).eq("purpose","job_exam").eq("job_id",a.job_id).eq("status","verified").limit(1);if(pay?.length)return true;}
+ return false;
+}
+async function openJobExamAfterVerification(jobId){
+ if(!user)return;
+ const {data:app}=await supabaseClient.from("job_applications").select("id,status,applicant_confirmed").eq("job_id",jobId).eq("applicant_id",user.id).maybeSingle();
+ const {data:pay}=await supabaseClient.from("payments").select("id,status").eq("user_id",user.id).eq("purpose","job_exam").eq("job_id",jobId).eq("status","verified").limit(1);
+ if(app?.status!=="accepted"||app?.applicant_confirmed!==true||!pay?.length){alert("Ikizami gifunguka gusa application yemejwe, wakanze Yego, kandi Admin amaze kwemeza payment ya 8,000 RWF.");return;}
+ $("examPanel")?.classList.remove("hidden");await loadPublicExams();$("examPanel")?.scrollIntoView({behavior:"smooth",block:"start"});alert("Payment yemejwe. Hitamo ikizami Admin yashyize kuri public hasi aha.");
 }
 function businessManagerReady(){return !!user}
 async function getMyBusiness(){
@@ -951,7 +1054,7 @@ async function loadAdminExams(){
 }
 async function loadPublicExams(){ const box=$("publicExamList"); if(!box)return; const {data,error}=await supabaseClient .from("exams") .select("id,title,description,duration_minutes,passing_score,status") .eq("status","published") .order("created_at",{ascending:false}); if(error){ box.innerHTML= `<div class="error">${escapeHTML(error.message)}</div>`; return; } if(!data?.length){ box.innerHTML= `<p class="muted">${escapeHTML(t("no_exams"))}</p>`; return; } box.innerHTML=data.map(e=>` <div class="card" style="padding:14px;margin-bottom:10px"> <h3>${escapeHTML(e.title)}</h3> <p>${escapeHTML(e.description||"")}</p> <p class="muted"> ⏱️ ${escapeHTML(String(e.duration_minutes||30))} minutes · 🎯 ${escapeHTML(String(e.passing_score||50))}% </p> <button onclick="startDynamicExam('${e.id}')"> ▶️ ${escapeHTML(t("start_exam"))} </button> </div> `).join(""); }
 
-    async function startDynamicExam(examId){ if(!user){ openAuth(); return; } /* Exam access yawe isanzwe ishingiye kuri: payment verified + igihe cyagenwe. */ const {data:access,error:accessError}= await supabaseClient.rpc( "exam_access_status", {p_user_id:user.id} ); if(accessError){ alert(accessError.message); return; } if(access?.can_open!==true){ alert( access?.message || "Exam ntirafunguka. Payment igomba kuba verified kandi igihe cyateganyijwe kikaba cyageze." ); return; } const {data:exam,error}=await supabaseClient .from("exams") .select("*") .eq("id",examId) .eq("status","published") .single(); if(error){ alert(error.message); return; } const {data:questions,error:qError}= await supabaseClient .from("exam_questions") .select("*") .eq("exam_id",examId) .order("question_order",{ascending:true}); if(qError){ alert(qError.message); return; } if(!questions?.length){ alert("Iyi exam nta questions ifite."); return; } activeExam={ exam, questions, startedAt:Date.now() }; renderDynamicExam(); $("examModal").classList.add("show"); startExamTimer( Number(exam.duration_minutes||30) ); } function renderDynamicExam(){ const box=$("examModal").querySelector(".modalbox"); box.innerHTML=` <h2>📝 ${escapeHTML(activeExam.exam.title)}</h2> <p class="muted"> ${escapeHTML(activeExam.exam.description||"")} </p> <div id="dynamicExamTimer" class="examTimer"> ⏱️ ${escapeHTML(t("time_left"))}: 00:00 </div> <div id="dynamicExamQuestions"> ${ activeExam.questions.map((q,i)=>` <div class="examq"> <b> ${i+1}. ${escapeHTML(q.question)} </b> <br><br> <label> <input type="radio" name="dynamic_${q.id}" value="a"> A. ${escapeHTML(q.option_a)} </label> <br> <label> <input type="radio" name="dynamic_${q.id}" value="b"> B. ${escapeHTML(q.option_b)} </label> <br> <label> <input type="radio" name="dynamic_${q.id}" value="c"> C. ${escapeHTML(q.option_c)} </label> <br> <label> <input type="radio" name="dynamic_${q.id}" value="d"> D. ${escapeHTML(q.option_d)} </label> </div> `).join("") } </div> <button onclick="submitDynamicExam()"> 📤 ${escapeHTML(t("submit_exam"))} </button> `; } function startExamTimer(minutes){ clearInterval(examTimer); let seconds=Math.max( 1, Math.floor(minutes*60) ); const timer=$("dynamicExamTimer"); function update(){ const m=Math.floor(seconds/60); const s=seconds%60; if(timer){ timer.textContent= "⏱️ "+t("time_left")+": "+ String(m).padStart(2,"0")+":"+ String(s).padStart(2,"0"); if(seconds<=60){ timer.classList.add("warning"); } } if(seconds<=0){ clearInterval(examTimer); submitDynamicExam(true); return; } seconds--; } update(); examTimer=setInterval(update,1000); } async function submitDynamicExam(autoSubmit=false){ if(!activeExam||!user)return; clearInterval(examTimer); let score=0; const answers={}; for(const q of activeExam.questions){ const selected=document.querySelector( `input[name="dynamic_${q.id}"]:checked` )?.value || null; answers[q.id]=selected; if(selected===q.correct_answer){ score++; } } const total=activeExam.questions.length; const percentage= total ? Math.round((score/total)*100) : 0; const passed= percentage>=Number(activeExam.exam.passing_score||50); const {error}=await supabaseClient .from("exam_results") .insert({ user_id:user.id, exam_id:activeExam.exam.id, score, total_questions:total, passed, answers }); if(error){ $("examModal").querySelector(".modalbox").insertAdjacentHTML( "beforeend", `<div class="error">${escapeHTML(error.message)}</div>` ); return; } $("examModal").querySelector(".modalbox").innerHTML=` <h2>📝 ${escapeHTML(activeExam.exam.title)}</h2> <div class="examResultBox"> <h3> ${escapeHTML(t("score"))}: ${score}/${total} </h3> <p> ${percentage}% </p> <p> ${ passed ? "✅ "+escapeHTML(t("passed")) : "❌ "+escapeHTML(t("not_passed")) } </p> </div> <button class="secondary" onclick="closeModal('examModal')"> Funga </button> `; activeExam=null; }
+    async function startDynamicExam(examId){ if(!user){ openAuth(); return; } /* Existing exam entitlement OR the accepted job application + verified 8,000 RWF job-exam payment. */ const {data:access,error:accessError}= await supabaseClient.rpc( "exam_access_status", {p_user_id:user.id} ); const jobExamAccess=await hasVerifiedJobExamAccess(); if(!jobExamAccess&&(accessError||access?.can_open!==true)){ alert( access?.message || accessError?.message || "Exam ntirafunguka. Admin agomba kwemeza payment ya 8,000 RWF." ); return; } const {data:exam,error}=await supabaseClient .from("exams") .select("*") .eq("id",examId) .eq("status","published") .single(); if(error){ alert(error.message); return; } const {data:questions,error:qError}= await supabaseClient .from("exam_questions") .select("*") .eq("exam_id",examId) .order("question_order",{ascending:true}); if(qError){ alert(qError.message); return; } if(!questions?.length){ alert("Iyi exam nta questions ifite."); return; } activeExam={ exam, questions, startedAt:Date.now() }; renderDynamicExam(); $("examModal").classList.add("show"); startExamTimer( Number(exam.duration_minutes||30) ); } function renderDynamicExam(){ const box=$("examModal").querySelector(".modalbox"); box.innerHTML=` <h2>📝 ${escapeHTML(activeExam.exam.title)}</h2> <p class="muted"> ${escapeHTML(activeExam.exam.description||"")} </p> <div id="dynamicExamTimer" class="examTimer"> ⏱️ ${escapeHTML(t("time_left"))}: 00:00 </div> <div id="dynamicExamQuestions"> ${ activeExam.questions.map((q,i)=>` <div class="examq"> <b> ${i+1}. ${escapeHTML(q.question)} </b> <br><br> <label> <input type="radio" name="dynamic_${q.id}" value="a"> A. ${escapeHTML(q.option_a)} </label> <br> <label> <input type="radio" name="dynamic_${q.id}" value="b"> B. ${escapeHTML(q.option_b)} </label> <br> <label> <input type="radio" name="dynamic_${q.id}" value="c"> C. ${escapeHTML(q.option_c)} </label> <br> <label> <input type="radio" name="dynamic_${q.id}" value="d"> D. ${escapeHTML(q.option_d)} </label> </div> `).join("") } </div> <button onclick="submitDynamicExam()"> 📤 ${escapeHTML(t("submit_exam"))} </button> `; } function startExamTimer(minutes){ clearInterval(examTimer); let seconds=Math.max( 1, Math.floor(minutes*60) ); const timer=$("dynamicExamTimer"); function update(){ const m=Math.floor(seconds/60); const s=seconds%60; if(timer){ timer.textContent= "⏱️ "+t("time_left")+": "+ String(m).padStart(2,"0")+":"+ String(s).padStart(2,"0"); if(seconds<=60){ timer.classList.add("warning"); } } if(seconds<=0){ clearInterval(examTimer); submitDynamicExam(true); return; } seconds--; } update(); examTimer=setInterval(update,1000); } async function submitDynamicExam(autoSubmit=false){ if(!activeExam||!user)return; clearInterval(examTimer); let score=0; const answers={}; for(const q of activeExam.questions){ const selected=document.querySelector( `input[name="dynamic_${q.id}"]:checked` )?.value || null; answers[q.id]=selected; if(selected===q.correct_answer){ score++; } } const total=activeExam.questions.length; const percentage= total ? Math.round((score/total)*100) : 0; const passed= percentage>=Number(activeExam.exam.passing_score||50); const {error}=await supabaseClient .from("exam_results") .insert({ user_id:user.id, exam_id:activeExam.exam.id, score, total_questions:total, passed, answers }); if(error){ $("examModal").querySelector(".modalbox").insertAdjacentHTML( "beforeend", `<div class="error">${escapeHTML(error.message)}</div>` ); return; } $("examModal").querySelector(".modalbox").innerHTML=` <h2>📝 ${escapeHTML(activeExam.exam.title)}</h2> <div class="examResultBox"> <h3> ${escapeHTML(t("score"))}: ${score}/${total} </h3> <p> ${percentage}% </p> <p> ${ passed ? "✅ "+escapeHTML(t("passed")) : "❌ "+escapeHTML(t("not_passed")) } </p> </div> <button class="secondary" onclick="closeModal('examModal')"> Funga </button> `; activeExam=null; }
 
     async function loadAdminRevenue(){
  if(!await isTrcoseAdmin())return;const {data,error}=await supabaseClient.from("payments").select("amount,purpose,status").eq("status","verified");
