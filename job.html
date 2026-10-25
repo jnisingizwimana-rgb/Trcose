@@ -509,8 +509,15 @@ async function init(){
  supabaseClient.auth.onAuthStateChange((_event,session)=>{user=session?.user||null;setTimeout(async()=>{await updateAdminUI();if(user)await loadProfile();renderProducts()},0)});
  await loadProducts();renderProducts();if(user){await loadProfile();await refreshJobAccess();await refreshExamAccess()}
  loadPublicAds();
- const sharedJobId=new URLSearchParams(location.search).get("job");
- if(sharedJobId){showPage("jobs");}else{loadPublicJobs();}
+ 
+const sharedJobId = new URLSearchParams(location.search).get("job");
+
+if (sharedJobId) {
+  showPage("jobs");
+  loadPublicJobs();
+  // Nyuma tuzongeramo gufungura akazi gafite iyi ID.
+} else {
+  loadPublicJobs();
 }
 init();
 
