@@ -622,14 +622,94 @@ async function copyTextFallback(value){
  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(value);return true}}catch(e){}
  try{const field=document.createElement("textarea");field.value=value;field.setAttribute("readonly","");field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();const ok=document.execCommand("copy");field.remove();return !!ok}catch(e){return false}
 }
-async function shareItem(title,url){
- try{if(navigator.share){await navigator.share({title:String(title||"Trcose Market"),text:String(title||"Trcose Market"),url:String(url)});return}}catch(e){if(e&&e.name==="AbortError")return}
- const copied=await copyTextFallback(String(url));
- alert(copied?"Link yakopiwe. Ushobora kuyishyira muri WhatsApp cyangwa ahandi.":"Ntibyashobotse gukopa link. Yifungure muri address bar uyikopore.");
+
+async function shareItem(title, url) {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: String(title || "Trcose Market"),
+        text: String(title || "Trcose Market"),
+        url: String(url)
+      });
+      return;
+    }
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+  }
+
+  const copied = await copyTextFallback(String(url));
+  alert(copied
+    ? "Link yakopiwe. Ushobora kuyishyira muri WhatsApp cyangwa ahandi."
+    : "Ntibyashobotse gukopa link. Yikopore muri address bar.");
 }
-function shareProduct(id){const p=products.find(x=>String(x.id)===String(id))||demoProducts.find(x=>String(x.id)===String(id));if(p)shareItem(p.name||"Trcose Product",location.href.split("?")[0]+"?product="+encodeURIComponent(id))}
-async function shareVideoPost(id){try{await supabaseClient.from("product_events").insert({product_id:id,event_type:"share",user_id:user?.id||null})}catch(e){} const p=products.find(x=>x.id===id);if(p)shareItem(p.name||"Trcose Video",location.href.split("?")[0]+"?product="+encodeURIComponent(id));await loadFreeVideoPosts();if(user)await loadMyVideoStats()}
-function shareReferral(){const c=$("myReferralCode")?.textContent?.trim()||"";shareItem("Trcose Referral "+c,location.href.split("?")[0]+"?ref="+encodeURIComponent(c))}
+
+function shareProduct(id) {
+  const p = products.find(x => String(x.id) === String(id))
+         || demoProducts.find(x => String(x.id) === String(id));
+
+  if (!p) {
+    alert("Igicuruzwa nticyabonetse.");
+    return;
+  }
+
+  const url = new URL(location.href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set("product", p.id);
+
+  shareItem(p.name || "Trcose Product", url.href);
+}
+
+async function shareVideoPost(id) {
+  try {
+    await supabaseClient.from("product_events").insert({
+      product_id: id,
+      event_type: "share",
+      user_id: user?.id || null
+    });
+  } catch (e) {
+    console.warn("Share tracking failed:", e);
+  }
+
+  const p = products.find(x => String(x.id) === String(id))
+         || demoProducts.find(x => String(x.id) === String(id));
+
+  if (p) {
+    shareProduct(p.id);
+  } else {
+    alert("Iyi video cyangwa post ntibonetse.");
+  }
+
+  await loadFreeVideoPosts();
+  if (user) await loadMyVideoStats();
+}
+
+function shareJob(id, title) {
+  if (!id) {
+    alert("ID y'akazi ntiboneka.");
+    return;
+  }
+
+  const url = new URL("job.html", "https://market-co.github.io/Trcose/");
+  url.searchParams.set("job", id);
+
+  shareItem(title || "Trcose Job", url.href);
+}
+
+function shareReferral() {
+  const c = $("myReferralCode")?.textContent?.trim() || "";
+  if (!c) {
+    alert("Referral code ntiboneka.");
+    return;
+  }
+
+  const url = new URL(location.href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set("ref", c);
+
+  shareItem("Trcose Referral " + c, url.href);
+}
 
 async function loadProfile(){
  if(!user)return;const {data}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
