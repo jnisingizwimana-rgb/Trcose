@@ -20,9 +20,9 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #d7d
 textarea{min-height:90px;resize:vertical}
 header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #0001}
 .head{max-width:1120px;margin:auto;padding:10px 14px}
-.top{display:flex;justify-content:center;align-items:center;position:relative}
-.logo{font-size:24px;font-weight:900;color:#1769ff}
-.topActions{position:absolute;right:0;display:flex;gap:7px;align-items:center}.supportEmailBtn{display:inline-flex;align-items:center;justify-content:center;padding:9px 10px;border-radius:11px;background:#eaf1ff;color:#1769ff;text-decoration:none;font-size:12px;font-weight:800;white-space:nowrap}.supportTopBtn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:9px 10px;border-radius:11px;background:#159447;color:#fff;text-decoration:none;font-size:12px;font-weight:800;white-space:nowrap}.topLanguageWrap{display:inline-flex;align-items:center;gap:2px;background:#eaf1ff;border:1px solid #c9dcff;border-radius:10px;padding:0 5px;color:#1769ff;height:36px;flex-shrink:0}.topLanguageWrap select{width:auto;min-width:42px;max-width:58px;margin:0;padding:7px 2px;border:0;background:transparent;color:#1769ff;font-size:11px;font-weight:900;outline:none}.topActions{gap:5px}.topAvatarBtn{padding:3px;border-radius:50%;width:42px;height:42px;overflow:hidden;background:#eef1f5;border:2px solid #1769ff}.topAvatarBtn img{width:100%;height:100%;object-fit:cover;border-radius:50%}.earnMenu{display:none;gap:8px;justify-content:center;flex-wrap:wrap;padding:8px 0 2px;max-width:100%}.earnMenu.show{display:flex}.earnMenu button{background:#eaf1ff;color:#1769ff}
+.top{display:flex;justify-content:flex-start;align-items:center;position:relative;min-height:44px;padding-right:105px}
+.logo{font-size:22px;font-weight:900;color:#1769ff;text-align:left;white-space:nowrap}
+.topActions{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;gap:7px;align-items:center}.supportEmailBtn{display:inline-flex;align-items:center;justify-content:center;padding:9px 10px;border-radius:11px;background:#eaf1ff;color:#1769ff;text-decoration:none;font-size:12px;font-weight:800;white-space:nowrap}.supportTopBtn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:9px 10px;border-radius:11px;background:#159447;color:#fff;text-decoration:none;font-size:12px;font-weight:800;white-space:nowrap}.topLanguageWrap{display:inline-flex;align-items:center;gap:2px;background:#eaf1ff;border:1px solid #c9dcff;border-radius:10px;padding:0 5px;color:#1769ff;height:36px;flex-shrink:0}.topLanguageWrap select{width:auto;min-width:42px;max-width:58px;margin:0;padding:7px 2px;border:0;background:transparent;color:#1769ff;font-size:11px;font-weight:900;outline:none}.topActions{gap:5px}.topAvatarBtn{padding:3px;border-radius:50%;width:42px;height:42px;overflow:hidden;background:#eef1f5;border:2px solid #1769ff}.topAvatarBtn img{width:100%;height:100%;object-fit:cover;border-radius:50%}.earnMenu{display:none;gap:8px;justify-content:center;flex-wrap:wrap;padding:8px 0 2px;max-width:100%}.earnMenu.show{display:flex}.earnMenu button{background:#eaf1ff;color:#1769ff}
 .nav{display:flex;gap:7px;overflow:auto;margin-top:10px;justify-content:center}
 .nav button{background:#eef1f5;color:#263247;white-space:nowrap}
 .nav button.active{background:#1769ff;color:#fff}
@@ -73,13 +73,24 @@ header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #
 .compatNotice{padding:10px;border-radius:10px;background:#eef6ff;color:#174a8b;font-size:12px;margin-top:8px}
 @media(max-width:650px){
  header .nav{justify-content:flex-start;padding-bottom:3px;-webkit-overflow-scrolling:touch}
+ .top{justify-content:flex-start;padding-right:82px;min-height:42px}
+ .logo{font-size:19px}
  .nav button{flex:0 0 auto;font-size:12px;padding:9px 12px}
- .hero h1{font-size:24px}.media{height:170px}.top{padding-right:0;padding-top:48px}.topActions{top:0;right:0;left:0;justify-content:flex-end;gap:4px}.topLanguageWrap{height:32px;padding:0 3px}.topLanguageWrap select{font-size:10px;min-width:35px;max-width:45px;padding:5px 1px}.supportTopBtn{padding:7px 6px;font-size:10px}.topAvatarBtn{width:34px;height:34px}.smallgrid{grid-template-columns:1fr}
+ .hero h1{font-size:24px}.media{height:170px}.topActions{right:0;left:auto;justify-content:flex-end;gap:4px}.topAvatarBtn{width:34px;height:34px}.smallgrid{grid-template-columns:1fr}
 }
     .languageBox{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; } .languageBox select{ width:auto; min-width:190px; margin:0; } .langBadge{ display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:20px; background:#eef4ff; color:#1769ff; font-size:12px; font-weight:700; }/* ========================================================= ADMIN EXAM BUILDER ========================================================= */ /* ========================================================= ADMIN EXAM BUILDER ========================================================= */ .examBuilderQuestion{ border:1px solid #dfe5ef; border-radius:15px; padding:14px; margin:12px 0; background:#f9fbff; } .examBuilderQuestion h4{ margin:0 0 8px; } .examOptionGrid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; } .examOption{ display:flex; gap:7px; align-items:center; } .examOption input[type="radio"]{ width:auto; } .examAdminActions{ display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; } .examTimer{ position:sticky; top:5px; z-index:10; padding:12px; border-radius:12px; background:#eef4ff; color:#1769ff; font-weight:900; text-align:center; margin-bottom:12px; } .examTimer.warning{ background:#fff0e8; color:#b54708; } .examResultBox{ padding:15px; border-radius:14px; background:#e7faee; color:#16703c; margin-top:12px; } .examPublished{ background:#e7faee; color:#16703c; } .examDraft{ background:#eef1f5; color:#4b5563; } @media(max-width:650px){ .examOptionGrid{ grid-template-columns:1fr; } .languageBox select{ width:100%; } }
 
 
-.videoFeed{margin-top:22px}.videoComposer{background:#fff;border:1px solid #dfe5ef;border-radius:16px;padding:15px;margin:12px 0}.videoPost{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 15px #0001;margin:12px 0}.videoPost video{width:100%;max-height:520px;background:#111;display:block}.videoPost .body{padding:14px}.phoneMasked{font-size:12px;color:#707887}.adminRequest{border:1px solid #dfe5ef;border-radius:12px;padding:12px;margin:10px 0}
+.profileHero{border:1px solid #e4ebf8;background:linear-gradient(180deg,#fff,#f8faff)}.profileVideoStats{margin-top:16px;padding:14px;border:1px solid #e1e9f8;border-radius:16px;background:#fbfcff}.profileVideoStats h3{margin-top:0;color:#1769ff}.profileVideoStats .stat{background:#eef4ff;border:1px solid #e1eaff}.videoFeed{margin-top:22px}.videoComposer{background:#fff;border:1px solid #dfe5ef;border-radius:16px;padding:15px;margin:12px 0}.videoPost{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 15px #0001;margin:12px 0}.videoPost video{width:100%;max-height:520px;background:#111;display:block}.videoPost .body{padding:14px}.phoneMasked{font-size:12px;color:#707887}.adminRequest{border:1px solid #dfe5ef;border-radius:12px;padding:12px;margin:10px 0}
+</style>
+<style>
+/* Google Translate stays available as an invisible engine; no toolbar/banner on the page. */
+.goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, .goog-te-balloon-frame,
+#goog-gt-tt, .goog-te-spinner-pos, .goog-te-gadget-icon { display:none !important; visibility:hidden !important; }
+html, body { top:0 !important; margin-top:0 !important; }
+body > .skiptranslate, body > iframe.goog-te-banner-frame, iframe.goog-te-banner-frame { display:none !important; visibility:hidden !important; height:0 !important; width:0 !important; }
+.goog-te-menu-frame, .goog-te-menu2, .goog-te-balloon-frame { display:none !important; }
+#google_translate_element { position:fixed !important; left:-10000px !important; top:0 !important; width:1px !important; height:1px !important; overflow:hidden !important; opacity:0 !important; pointer-events:none !important; z-index:-1 !important; }
 </style>
 </head>
 <body>
@@ -88,8 +99,6 @@ header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #
   <div class="top">
    <div class="logo">Trcose Market 🛍️</div>
    <div class="topActions">
-    <a class="supportTopBtn" href="https://wa.me/qr/SXDKDSH3MW7NO1" target="_blank" rel="noopener noreferrer" aria-label="Contact Trcose Support">💬 Support</a>
-    <label class="topLanguageWrap" aria-label="Choose website language"><span aria-hidden="true">🌐</span><select id="topLanguageSelect" aria-label="Choose language" onchange="changeLanguage(this.value)"><option value="rw">RW</option><option value="en">EN</option><option value="fr">FR</option><option value="sw">SW</option><option value="es">ES</option><option value="pt">PT</option><option value="de">DE</option><option value="ar">AR</option></select></label>
     <button class="secondary" onclick="openNotifications()" aria-label="Notifications">🔔</button>
     <button class="topAvatarBtn" onclick="toggleMenu()" aria-label="Open profile menu"><img id="topProfileAvatar" src="https://via.placeholder.com/160x160?text=T" alt="Profile picture"></button>
    </div>
@@ -143,14 +152,14 @@ header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #
  <div id="products" class="grid"></div>
 
  <section class="videoFeed" aria-labelledby="freeVideoTitle">
-  <h2 id="freeVideoTitle">🎬 Upload Video — Ubuntu, Get More Followers</h2>
-  <p class="muted">Shyira video ku buntu. Abantu bashobora kuyireba, kugukurikira, gukunda, gutanga ibitekerezo no kuyisangiza abandi.</p>
+  <h2 id="freeVideoTitle">🎬 Shyiraho Video</h2>
+  <p class="muted">Shyiraho video yawe, abandi bayirebe kandi bayikurikire.</p>
   <div class="videoComposer">
-   <input id="videoPostName" maxlength="100" placeholder="Izina rya post">
-   <textarea id="videoPostDescription" maxlength="1500" placeholder="Andika ibisobanuro bya post. Numero za telefone zishobora guhishwa mu nyandiko igaragara public."></textarea>
+   <input id="videoPostName" maxlength="100" placeholder="Umutwe wa video">
+   <textarea id="videoPostDescription" maxlength="1500" placeholder="Ibisobanuro bigufi (si ngombwa)"></textarea>
    <input id="videoPostFile" type="file" accept="video/*">
-   <p class="muted">Video igomba kuba iri munsi ya 100 MB. Upload ni ubuntu; internet yawe ishobora gukoresha data.</p>
-   <button onclick="publishFreeVideoPost()">🌐 Shyira Video ku Isoko — Ubuntu</button>
+   <p class="muted">Hitamo video itarengeje 100 MB.</p>
+   <button onclick="publishFreeVideoPost()">📤 Shyiraho Video</button>
    <p id="videoPostMessage" class="muted" role="status"></p>
   </div>
   <div id="videoPosts"><p class="muted">Turimo gushaka video posts...</p></div>
@@ -292,7 +301,7 @@ header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #
 </section>
 
 <section id="profilePage" class="page hidden">
- <div class="panel"><h2>👤 Profile</h2>
+ <div class="panel profileHero"><h2>👤 My Profile</h2><p class="muted">Umwirondoro wawe n’imibare ya Video Posts yawe.</p>
   <div class="avatarWrap"><img id="profileAvatar" class="avatar" src="https://via.placeholder.com/160x160?text=T" alt="Profile picture">
    <div><b>Profile picture</b><input id="profilePhoto" type="file" accept="image/*" onchange="previewProfilePhoto(event)">
    <small class="muted">Hitamo ifoto yo kuri telefone.</small></div>
@@ -305,6 +314,7 @@ header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #
    <div class="stat">➡️ Following<br><b id="profileFollowingCount">0</b></div>
   </div>
   <p class="muted">Imibare ivugururwa iva muri Supabase. Followers ni abantu bagukurikira kuri Trcose Market.</p>
+  <div class="profileVideoStats"><h3>🎬 Video Posts — Public Statistics</h3><div class="stats"><div class="stat">🎬 Video Posts<br><b id="profileVideoCount">0</b></div><div class="stat">👀 Views<br><b id="profileVideoViews">0</b></div><div class="stat">❤️ Likes<br><b id="profileVideoLikes">0</b></div><div class="stat">💬 Comments<br><b id="profileVideoComments">0</b></div><div class="stat">↗️ Shares<br><b id="profileVideoShares">0</b></div></div><p class="muted">Iyi mibare ireba video posts zawe gusa; ibicuruzwa bisanzwe ntibihindurwa.</p></div>
   <button onclick="saveProfile()">💾 Bika Profile</button><p id="profileMessage" class="muted"></p>
  </div>
 </section>
@@ -470,7 +480,7 @@ header{background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #
 <script>
 const SUPABASE_URL="https://brretfrzuvyjrsbsjjml.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_aGs2zQzGZxOJYfuEznsvsQ_hyCkIXzY";
-const ZUNIVO_ADMIN_EMAILS=["jnisingizwimana@gmail.com","hakizakwizerajeanbaptiste8@gmail.com"];
+const ZUNIVO_ADMIN_EMAILS=["jnisingizwimana@gmail.com","hakizakwizerajeanbaptiste8@gmail.com"].map(email=>String(email).toLowerCase().trim());
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let user=null,products=[],paymentPurpose=null,selectedProduct=null,productMediaType="image",productMediaFile=null,activeChatUserId=null,activeChatProductId=null;
 const demoProducts=[
@@ -514,6 +524,8 @@ async function init(){
  const {data}=await supabaseClient.auth.getSession();user=data.session?.user||null;await updateAdminUI();
  supabaseClient.auth.onAuthStateChange((_event,session)=>{user=session?.user||null;setTimeout(async()=>{await updateAdminUI();if(user){await loadProfile();await loadFollowStats()}renderProducts();loadFreeVideoPosts()},0)});
  await loadProducts();renderProducts();if(user){await loadProfile();await refreshJobAccess();await refreshExamAccess()}
+ // Open a product when someone visits a shared Trcose link such as ?product=UUID.
+ try{const sharedProductId=new URLSearchParams(window.location.search).get("product");if(sharedProductId){const sharedProduct=products.find(p=>String(p.id)===String(sharedProductId))||demoProducts.find(p=>String(p.id)===String(sharedProductId));if(sharedProduct){await openProduct(sharedProductId)}else{const details=$("productDetails");if(details)details.innerHTML="<div class='notice'>Iki gicuruzwa ntikiboneka kuri public cyangwa link si yo.</div>"}}}catch(e){console.warn("Shared product link error",e)}
  loadPublicAds();
  loadFreeVideoPosts();
  if(user)loadFollowStats();
@@ -602,89 +614,23 @@ async function openProduct(id){
 async function likeProduct(id){
  if(!user){openAuth();return}if(String(id).startsWith("demo")){alert("Like izabikwa kuri product nyayo.");return}
  const {data}=await supabaseClient.from("product_likes").select("id").eq("product_id",id).eq("user_id",user.id).maybeSingle();
- if(data)await supabaseClient.from("product_likes").delete().eq("id",data.id);else await supabaseClient.from("product_likes").insert({product_id:id,user_id:user.id})
+ if(data)await supabaseClient.from("product_likes").delete().eq("id",data.id);else await supabaseClient.from("product_likes").insert({product_id:id,user_id:user.id});
+ const likedProduct=products.find(x=>x.id===id);if(likedProduct?.category==="Video"){await loadFreeVideoPosts();await loadMyVideoStats()}
 }
 function buyProduct(id){const p=products.find(x=>x.id===id)||demoProducts.find(x=>x.id===id);if(!p)return;if(!user){openAuth();return}if(String(id).startsWith("demo")){alert("Iyi ni demo product. Shyiraho product nyayo.");return}startPayment("order",Number(p.price),p.id)}
-
-async function shareItem(title, url) {
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title: title,
-        text: title,
-        url: url
-      });
-      return;
-    }
-  } catch (e) {
-    if (e.name === "AbortError") return;
-  }
-
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(url);
-      alert("Link yakopowe neza. Ushobora kuyisangiza abandi.");
-      return;
-    }
-  } catch (e) {}
-
-  try {
-    const input = document.createElement("textarea");
-    input.value = url;
-    input.style.position = "fixed";
-    input.style.left = "-9999px";
-    document.body.appendChild(input);
-    input.select();
-
-    const copied = document.execCommand("copy");
-    input.remove();
-
-    if (copied) {
-      alert("Link yakopowe neza. Ushobora kuyisangiza abandi.");
-    } else {
-      prompt("Kopa iyi link uyisangize abandi:", url);
-    }
-  } catch (e) {
-    prompt("Kopa iyi link uyisangize abandi:", url);
-  }
+async function copyTextFallback(value){
+ try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(value);return true}}catch(e){}
+ try{const field=document.createElement("textarea");field.value=value;field.setAttribute("readonly","");field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();const ok=document.execCommand("copy");field.remove();return !!ok}catch(e){return false}
 }
-
-function makeShareUrl(parameter, id) {
-  const url = new URL(window.location.href);
-  url.search = "";
-  url.hash = "";
-  url.searchParams.set(parameter, String(id));
-  return url.toString();
+async function shareItem(title,url){
+ try{if(navigator.share){await navigator.share({title:String(title||"Trcose Market"),text:String(title||"Trcose Market"),url:String(url)});return}}catch(e){if(e&&e.name==="AbortError")return}
+ const copied=await copyTextFallback(String(url));
+ alert(copied?"Link yakopiwe. Ushobora kuyishyira muri WhatsApp cyangwa ahandi.":"Ntibyashobotse gukopa link. Yifungure muri address bar uyikopore.");
 }
+function shareProduct(id){const p=products.find(x=>String(x.id)===String(id))||demoProducts.find(x=>String(x.id)===String(id));if(p)shareItem(p.name||"Trcose Product",location.href.split("?")[0]+"?product="+encodeURIComponent(id))}
+async function shareVideoPost(id){try{await supabaseClient.from("product_events").insert({product_id:id,event_type:"share",user_id:user?.id||null})}catch(e){} const p=products.find(x=>x.id===id);if(p)shareItem(p.name||"Trcose Video",location.href.split("?")[0]+"?product="+encodeURIComponent(id));await loadFreeVideoPosts();if(user)await loadMyVideoStats()}
+function shareReferral(){const c=$("myReferralCode")?.textContent?.trim()||"";shareItem("Trcose Referral "+c,location.href.split("?")[0]+"?ref="+encodeURIComponent(c))}
 
-function shareProduct(id) {
-  const p = products.find(x => String(x.id) === String(id))
-    || demoProducts.find(x => String(x.id) === String(id));
-
-  if (!p) {
-    alert("Iki gicuruzwa nticyabonetse.");
-    return;
-  }
-
-  shareItem(
-    p.name || "Trcose Product",
-    makeShareUrl("product", id)
-  );
-}
-
-function shareReferral() {
-  const c = $("myReferralCode")?.textContent?.trim() || "";
-
-  if (!c) {
-    alert("Referral code yawe ntiraboneka.");
-    return;
-  }
-
-  shareItem(
-    "Trcose Referral " + c,
-    makeShareUrl("ref", c)
-  );
-}
 async function loadProfile(){
  if(!user)return;const {data}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
  if(data){$("profileName").value=data.name||user.user_metadata?.name||"";$("profileEmail").value=data.email||user.email||"";$("profilePhone").value=data.phone||user.phone||"";$("profileCity").value=data.city||"";$("profileAbout").value=data.about||"";if(data.avatar_url){$("profileAvatar").src=data.avatar_url;if($("topProfileAvatar"))$("topProfileAvatar").src=data.avatar_url}}
@@ -802,36 +748,8 @@ async function toggleBusinessPublic(){
  const next=biz.is_public===true?false:true; const {error}=await supabaseClient.from("businesses").update({is_public:next}).eq("id",biz.id).eq("owner_id",user.id);
  $("bmBizMessage").textContent=error?"SQL ya businesses igomba kuba ifite is_public: "+error.message:(next?"Business iri PUBLIC.":"Business yakuwe PUBLIC.");
 }
-
-async function shareBusinessProfile(){
-  if(!user){
-    openAuth();
-    return;
-  }
-
-  try {
-    const biz = await getMyBusiness();
-
-    if(!biz || !biz.id){
-      alert("Nta Business Account ibonetse kuri konti yawe.");
-      return;
-    }
-
-    const url = new URL(window.location.href);
-    url.search = "";
-    url.hash = "";
-    url.searchParams.set("business", String(biz.id));
-
-    shareItem(
-      biz.name || "Trcose Business",
-      url.toString()
-    );
-  } catch (error) {
-    console.error("Business profile sharing error:", error);
-    alert("Ntibyashobotse gukora link ya Business Account. Ongera ugerageze.");
-  }
-}
-    async function createBusinessJob(){
+async function shareBusinessProfile(){const biz=await getMyBusiness();if(!biz){alert("Nta Business Account.");return}shareItem(biz.name||"Trcose Business",location.href.split("?")[0]+"?business="+encodeURIComponent(biz.id))}
+async function createBusinessJob(){
  if(!user){openAuth();return} const title=$("bmJobTitle").value.trim(); if(!title){$("bmJobMessage").textContent="Andika job title.";return}
  const row={owner_id:user.id,title,company:$("bmJobCompany").value.trim(),location:$("bmJobLocation").value.trim(),job_type:$("bmJobType").value,salary:$("bmJobSalary").value.trim(),description:$("bmJobDescription").value.trim(),status:"pending_payment",is_public:false};
  const {data,error}=await supabaseClient.from("jobs").insert(row).select().single(); if(error){$("bmJobMessage").textContent="Jobs table/columns ntibirahuza: "+error.message;return}
@@ -840,20 +758,7 @@ async function shareBusinessProfile(){
 async function setMyJobProfilePublic(v){
  if(!user){openAuth();return} const {error}=await supabaseClient.from("job_profiles").update({is_public:v}).eq("user_id",user.id);$("bmProfileMessage").textContent=error?"Job profile public setting isaba column is_public muri SQL v2: "+error.message:(v?"Job Profile iri PUBLIC.":"Job Profile yakuwe PUBLIC.");
 }
-
-async function shareMyJobProfile(){
-  if(!user){
-    openAuth();
-    return;
-  }
-
-  const url = new URL(window.location.href);
-  url.search = "";
-  url.hash = "";
-  url.searchParams.set("jobprofile", user.id);
-
-  shareItem("Trcose Job Profile", url.toString());
-}
+async function shareMyJobProfile(){if(!user){openAuth();return}shareItem("Trcose Job Profile",location.href.split("?")[0]+"?jobprofile="+encodeURIComponent(user.id))}
 async function loadBusinessExamReview(){
  if(!user){openAuth();return} const box=$("bmExamReview");box.innerHTML="⏳ Loading...";
  const {data,error}=await supabaseClient.from("exam_results").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(20);
@@ -945,9 +850,18 @@ async function openProductComments(productId){
  box.innerHTML=(data||[]).map(c=>`<div class="comment"><b>${escapeHTML(String(c.user_id).slice(0,8))}</b><br>${escapeHTML(c.body)}</div>`).join("")||'<p class="muted">Nta comments.</p>'
 }
 async function addProductComment(productId){
- if(!user){openAuth();return}const input=$("commentInput-"+productId),body=input?.value.trim();if(!body)return;const {error}=await supabaseClient.from("product_comments").insert({product_id:productId,user_id:user.id,body});if(error){alert(error.message);return}input.value="";await openProductComments(productId)
+ if(!user){openAuth();return}const input=$("commentInput-"+productId),body=input?.value.trim();if(!body)return;const {error}=await supabaseClient.from("product_comments").insert({product_id:productId,user_id:user.id,body});if(error){alert(error.message);return}input.value="";await openProductComments(productId);if(products.find(x=>x.id===productId)?.category==="Video"){await loadFreeVideoPosts();if(user)await loadMyVideoStats()}
 }
-async function publishProductPublic(id){if(!user)return;const {error}=await supabaseClient.from("products").update({status:"active"}).eq("id",id).eq("seller_id",user.id);if(error)alert(error.message);else{await loadProducts();renderProducts()}}
+async function publishProductPublic(id){
+ if(!user){openAuth();return}
+ if(!confirm("Banza wemeze ko ubwishyu bw'iki gicuruzwa bwemejwe na Admin. Komeza?"))return;
+ const {data:paid,error:payError}=await supabaseClient.from("payments").select("id,status,purpose,product_id").eq("user_id",user.id).eq("product_id",id).in("purpose",["listing","first_product_verification"]).eq("status","verified").limit(1);
+ if(payError){alert("Ntabwo nshoboye kugenzura ubwishyu: "+payError.message+". Ntugashyire igicuruzwa public mbere yo gukosora ubwishyu.");return}
+ if(!paid||!paid.length){alert("Iki gicuruzwa ntikirabona ubwishyu bwemejwe na Admin. Ntigishobora kujya public.");return}
+ const {error}=await supabaseClient.from("products").update({status:"active"}).eq("id",id).eq("seller_id",user.id);
+ if(error){alert("Ntibyashobotse gushyira igicuruzwa public: "+error.message+". Reba Supabase RLS/policy.");return}
+ await loadProducts();renderProducts();alert("Igicuruzwa cyashyizwe public nyuma yo kugenzura ubwishyu.");
+}
 async function removeProductFromPublic(id){if(!user)return;const {error}=await supabaseClient.from("products").update({status:"hidden"}).eq("id",id).eq("seller_id",user.id);if(error)alert(error.message);else{await loadProducts();renderProducts()}}
 async function deleteMyProduct(id){if(!user||!confirm("Urashaka gusiba iki gicuruzwa burundu?"))return;const {error}=await supabaseClient.from("products").delete().eq("id",id).eq("seller_id",user.id);if(error)alert(error.message);else{await loadProducts();renderProducts();closeModal("productModal")}}
 
@@ -976,7 +890,7 @@ async function publishFreeVideoPost(){
   const {error}=await supabaseClient.from("products").insert({seller_id:user.id,name,description,price:0,city:"",category:"Video",image_url:url,media_type:"video",media_text:null,status:"active"});
   if(error)throw error;
   $("videoPostName").value="";$("videoPostDescription").value="";$("videoPostFile").value="";
-  box.textContent="Video post yashyizwe public ku buntu.";
+  box.textContent="Video yashyizwe ku rubuga.";
   await loadProducts();renderProducts();await loadFreeVideoPosts();
  }catch(e){box.textContent="Ntibyashobotse: "+(e?.message||"Reba product-videos bucket, products columns na Supabase RLS policies.");}
 }
@@ -994,6 +908,23 @@ async function loadFollowStats(){
  ]);
  if($("profileFollowerCount"))$("profileFollowerCount").textContent=followers.error?"—":String(Number(followers.data||0));
  if($("profileFollowingCount"))$("profileFollowingCount").textContent=following.error?"—":String(Number(following.data||0));
+ await loadMyVideoStats();
+}
+async function loadMyVideoStats(){
+ if(!user)return;
+ const idsResult=await supabaseClient.from("products").select("id").eq("seller_id",user.id).eq("category","Video").eq("status","active");
+ if(idsResult.error){["profileVideoCount","profileVideoViews","profileVideoLikes","profileVideoComments","profileVideoShares"].forEach(id=>{if($(id))$(id).textContent="—"});return}
+ const ids=(idsResult.data||[]).map(x=>x.id);
+ if($("profileVideoCount"))$("profileVideoCount").textContent=String(ids.length);
+ const fields=["profileVideoViews","profileVideoLikes","profileVideoComments","profileVideoShares"];
+ if(!ids.length){fields.forEach(id=>{if($(id))$(id).textContent="0"});return}
+ const [views,likes,comments,shares]=await Promise.all([
+  supabaseClient.from("product_events").select("id",{count:"exact",head:true}).in("product_id",ids).eq("event_type","view"),
+  supabaseClient.from("product_likes").select("id",{count:"exact",head:true}).in("product_id",ids),
+  supabaseClient.from("product_comments").select("id",{count:"exact",head:true}).in("product_id",ids),
+  supabaseClient.from("product_events").select("id",{count:"exact",head:true}).in("product_id",ids).eq("event_type","share")
+ ]);
+ const values=[views,likes,comments,shares];values.forEach((r,i)=>{if($(fields[i]))$(fields[i]).textContent=r.error?"—":String(r.count||0)});
 }
 async function toggleFollowUser(targetId){
  if(!user){openAuth();return}
@@ -1003,7 +934,7 @@ async function toggleFollowUser(targetId){
   if(error)throw error;
   if(data){const {error:delError}=await supabaseClient.from("user_follows").delete().eq("id",data.id);if(delError)throw delError;}
   else {const {error:insError}=await supabaseClient.from("user_follows").insert({follower_id:user.id,followed_id:targetId});if(insError)throw insError;}
-  await loadFollowStats();await loadFreeVideoPosts();
+  await loadFollowStats();await loadFreeVideoPosts();await loadMyVideoStats();
  }catch(e){alert("Follow ntibyakunze. Reba ko SQL ya user_follows yashyizwe muri Supabase na RLS policies zayo. "+(e?.message||""));}
 }
 async function isFollowingUser(targetId){
@@ -1018,10 +949,11 @@ async function loadFreeVideoPosts(){
  if(error){box.innerHTML=`<div class="notice">Video posts ntizashoboye kwerekanwa: ${escapeHTML(error.message)}</div>`;return}
  if(!data?.length){box.innerHTML='<div class="panel muted">Nta video posts zirashyirwaho. Ba uwa mbere!</div>';return}
  const cards=await Promise.all(data.map(async p=>{
-  const [views,likes,comments,followers,following]=await Promise.all([
+  const [views,likes,comments,shares,followers,following]=await Promise.all([
    supabaseClient.from("product_events").select("id",{count:"exact",head:true}).eq("product_id",p.id).eq("event_type","view"),
    supabaseClient.from("product_likes").select("id",{count:"exact",head:true}).eq("product_id",p.id),
    supabaseClient.from("product_comments").select("id",{count:"exact",head:true}).eq("product_id",p.id),
+   supabaseClient.from("product_events").select("id",{count:"exact",head:true}).eq("product_id",p.id).eq("event_type","share"),
    getFollowCount(p.seller_id),
    isFollowingUser(p.seller_id)
   ]);
@@ -1030,9 +962,9 @@ async function loadFreeVideoPosts(){
    <video controls playsinline preload="metadata" src="${escapeHTML(p.media_url||p.image_url||"")}" onplay="recordVideoPostView('${String(p.id).replace(/'/g,"\\'")}')"></video>
    <div class="body"><h3>${escapeHTML(hidePhoneNumbers(p.name||"Video post"))}</h3><p>${escapeHTML(hidePhoneNumbers(p.description||""))}</p>
    <p class="phoneMasked">🔒 Numero zishobora guhishwa mu nyandiko igaragara; ntibikuraho numero ziri muri video ubwayo.</p>
-   <p class="muted">👀 ${views.count||0} views · ❤️ ${likes.count||0} likes · 💬 ${comments.count||0} comments · 👥 ${followers===null?"—":followers} followers</p>
-   <div class="actionRow"><button onclick="openProduct('${String(p.id).replace(/'/g,"\\'")}')">👀 View / Comment</button><button class="secondary" onclick="likeProduct('${String(p.id).replace(/'/g,"\\'")}')">❤️ Like</button><button class="secondary" onclick="shareProduct('${String(p.id).replace(/'/g,"\\'")}')">↗️ Share</button>
-   ${p.seller_id&&user&&p.seller_id!==user.id?`<button class="secondary" onclick="toggleFollowUser('${String(p.seller_id).replace(/'/g,"\\'")}')">${followLabel}</button>`:""}
+   <p class="muted">🌐 PUBLIC · 👀 ${views.count||0} views · ❤️ ${likes.count||0} likes · 💬 ${comments.count||0} comments · ↗️ ${shares.count||0} shares · 👥 ${followers===null?"—":followers} followers</p>
+   <div class="actionRow"><button onclick="openProduct('${String(p.id).replace(/'/g,"\\'")}')">👀 View / Comment</button><button class="secondary" onclick="likeProduct('${String(p.id).replace(/'/g,"\\'")}')">❤️ Like</button><button class="secondary" onclick="shareVideoPost('${String(p.id).replace(/'/g,"\\'")}')">↗️ Share</button>
+   ${p.seller_id&&(!user||p.seller_id!==user.id)?`<button class="secondary" onclick="toggleFollowUser('${String(p.seller_id).replace(/'/g,"\\'")}')">${followLabel}</button>`:""}
    ${user&&p.seller_id===user.id?`<button class="danger" onclick="deleteMyProduct('${String(p.id).replace(/'/g,"\\'")}')">🗑️ Delete</button>`:""}</div></div></article>`;
  }));
  box.innerHTML=cards.join("");
@@ -1147,12 +1079,76 @@ const ZUNIVO_LANGUAGES = { rw: "Kinyarwanda", en: "English", fr: "Français", sw
 function detectTrcoseLanguage(){ const saved=localStorage.getItem("trcose_language") || localStorage.getItem("zunivo_language"); if(saved && ZUNIVO_LANGUAGES[saved]) return saved; const browserLang=(navigator.language||navigator.userLanguage||"rw").toLowerCase().split("-")[0]; return ZUNIVO_LANGUAGES[browserLang] ? browserLang : "en"; }
 let zunivoLanguage=detectTrcoseLanguage();
 function t(key){ return TRCOSE_JOB_TRANSLATIONS[zunivoLanguage]?.[key] || ZUNIVO_TRANSLATIONS[zunivoLanguage]?.[key] || ZUNIVO_TRANSLATIONS.en?.[key] || key; }
-function applyTrcoseLanguage(lang){ if(!ZUNIVO_LANGUAGES[lang]) lang="en"; zunivoLanguage=lang; localStorage.setItem("trcose_language",lang); localStorage.setItem("zunivo_language",lang); const html=document.getElementById("zunivoHtml")||document.documentElement; html.lang=lang; html.dir=lang==="ar"?"rtl":"ltr"; document.documentElement.style.direction=lang==="ar"?"rtl":"ltr"; document.querySelectorAll("[data-i18n]").forEach(el=>{ const key=el.getAttribute("data-i18n"); const value=t(key); if(value && el.children.length===0) el.textContent=value; }); document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=t(el.getAttribute("data-i18n-placeholder"));}); const selector=document.getElementById("languageSelect"); if(selector)selector.value=lang; const topSelector=document.getElementById("topLanguageSelect"); if(topSelector)topSelector.value=lang; }
+function applyTrcoseLanguage(lang){ if(!ZUNIVO_LANGUAGES[lang]) lang="en"; zunivoLanguage=lang; localStorage.setItem("trcose_language",lang); localStorage.setItem("zunivo_language",lang); const html=document.getElementById("zunivoHtml")||document.documentElement; html.lang=lang; html.dir=lang==="ar"?"rtl":"ltr"; document.documentElement.style.direction=lang==="ar"?"rtl":"ltr"; document.querySelectorAll("[data-i18n]").forEach(el=>{ const key=el.getAttribute("data-i18n"); const value=t(key); if(value && el.children.length===0) el.textContent=value; }); document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=t(el.getAttribute("data-i18n-placeholder"));}); const selector=document.getElementById("languageSelect"); if(selector)selector.value=lang; }
 function changeLanguage(lang){ applyTrcoseLanguage(lang); }
 document.addEventListener("DOMContentLoaded",()=>applyTrcoseLanguage(zunivoLanguage));
     let adminExamQuestions=[]; let editingExamId=null; let examTimer=null; let activeExam=null; function addAdminExamQuestion(data=null){ const id="q_"+Date.now()+"_"+Math.random().toString(36).slice(2,7); adminExamQuestions.push({ localId:id, id:data?.id||null, question:data?.question||"", option_a:data?.option_a||"", option_b:data?.option_b||"", option_c:data?.option_c||"", option_d:data?.option_d||"", correct_answer:data?.correct_answer||"a" }); renderAdminExamQuestions(); } function renderAdminExamQuestions(){ const box=$("adminExamQuestions"); if(!adminExamQuestions.length){ box.innerHTML= '<div class="notice">Nta question urashyiramo. Kanda "Ongeramo Question".</div>'; return; } box.innerHTML=adminExamQuestions.map((q,i)=>` <div class="examBuilderQuestion"> <h4> Question ${i+1} </h4> <textarea placeholder="${escapeHTML(t("question"))}" oninput="updateAdminExamQuestion('${q.localId}','question',this.value)" >${escapeHTML(q.question)}</textarea> <div class="examOptionGrid"> <input placeholder="${escapeHTML(t("option_a"))}" value="${escapeHTML(q.option_a)}" oninput="updateAdminExamQuestion('${q.localId}','option_a',this.value)" > <input placeholder="${escapeHTML(t("option_b"))}" value="${escapeHTML(q.option_b)}" oninput="updateAdminExamQuestion('${q.localId}','option_b',this.value)" > <input placeholder="${escapeHTML(t("option_c"))}" value="${escapeHTML(q.option_c)}" oninput="updateAdminExamQuestion('${q.localId}','option_c',this.value)" > <input placeholder="${escapeHTML(t("option_d"))}" value="${escapeHTML(q.option_d)}" oninput="updateAdminExamQuestion('${q.localId}','option_d',this.value)" > </div> <div style="margin-top:10px"> <b>${escapeHTML(t("correct_answer"))}</b> <div class="examOptionGrid"> ${["a","b","c","d"].map(x=>` <label class="examOption"> <input type="radio" name="correct_${q.localId}" ${q.correct_answer===x?"checked":""} onchange="updateAdminExamQuestion('${q.localId}','correct_answer','${x}')" > ${x.toUpperCase()} </label> `).join("")} </div> </div> <div class="examAdminActions"> <button class="danger" onclick="removeAdminExamQuestion('${q.localId}')"> 🗑️ Remove </button> </div> </div> `).join(""); } function updateAdminExamQuestion(localId,key,value){ const q=adminExamQuestions.find(x=>x.localId===localId); if(q) q[key]=value; } function removeAdminExamQuestion(localId){ adminExamQuestions= adminExamQuestions.filter(x=>x.localId!==localId); renderAdminExamQuestions(); } function resetAdminExamBuilder(){ editingExamId=null; adminExamQuestions=[]; $("adminExamTitle").value=""; $("adminExamDescription").value=""; $("adminExamDuration").value=30; $("adminExamPassing").value=50; renderAdminExamQuestions(); } async function saveAdminExam(status){ if(!await isTrcoseAdmin()){ alert("Nturi Admin."); return; } const title=$("adminExamTitle").value.trim(); const description=$("adminExamDescription").value.trim(); const duration=Number($("adminExamDuration").value||30); const passing=Number($("adminExamPassing").value||50); if(!title){ $("adminExamManagerMessage").textContent= "Andika exam title."; return; } if(!adminExamQuestions.length){ $("adminExamManagerMessage").textContent= "Banza wongeremo questions."; return; } for(const q of adminExamQuestions){ if( !q.question.trim() || !q.option_a.trim() || !q.option_b.trim() || !q.option_c.trim() || !q.option_d.trim() ){ $("adminExamManagerMessage").textContent= "Buri question igomba kugira question na options A-D."; return; } } $("adminExamManagerMessage").textContent="⏳ Saving..."; let examId=editingExamId; if(examId){ const {error}=await supabaseClient .from("exams") .update({ title, description, duration_minutes:duration, passing_score:passing, status }) .eq("id",examId); if(error){ $("adminExamManagerMessage").textContent=error.message; return; } await supabaseClient .from("exam_questions") .delete() .eq("exam_id",examId); }else{ const {data,error}=await supabaseClient .from("exams") .insert({ title, description, duration_minutes:duration, passing_score:passing, status, created_by:user.id }) .select() .single(); if(error){ $("adminExamManagerMessage").textContent=error.message; return; } examId=data.id; } const rows=adminExamQuestions.map((q,index)=>({ exam_id:examId, question_order:index+1, question:q.question.trim(), option_a:q.option_a.trim(), option_b:q.option_b.trim(), option_c:q.option_c.trim(), option_d:q.option_d.trim(), correct_answer:q.correct_answer })); const {error:qError}=await supabaseClient .from("exam_questions") .insert(rows); if(qError){ $("adminExamManagerMessage").textContent=qError.message; return; } $("adminExamManagerMessage").innerHTML= status==="published" ? `<span class="success">${escapeHTML(t("exam_published_success"))}</span>` : `<span class="success">${escapeHTML(t("exam_saved"))}</span>`; resetAdminExamBuilder(); await loadAdminExamManager(); } async function loadAdminExamManager(){ if(!await isTrcoseAdmin())return; const box=$("adminExamManagerList"); box.innerHTML="⏳ Loading..."; const {data,error}=await supabaseClient .from("exams") .select("*") .order("created_at",{ascending:false}); if(error){ box.innerHTML= `<div class="error">${escapeHTML(error.message)}</div>`; return; } if(!data?.length){ box.innerHTML= `<p class="muted">${escapeHTML(t("no_exams"))}</p>`; return; } box.innerHTML=data.map(e=>` <div class="card" style="padding:14px;margin-bottom:10px"> <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"> <h3 style="margin:0"> ${escapeHTML(e.title)} </h3> <span class="status ${ e.status==="published" ?"examPublished" :"examDraft" }"> ${escapeHTML(e.status||"draft")} </span> </div> <p class="muted"> ${escapeHTML(e.description||"")} </p> <p> ⏱️ 
 ${escapeHTML(String(e.duration_minutes||0))} min · 🎯 ${escapeHTML(String(e.passing_score||0))}% </p> <div class="examAdminActions"> <button onclick="editAdminExam('${e.id}')"> ✏️ ${escapeHTML(t("edit"))} </button> ${ e.status!=="published" ? `<button class="successBtn" onclick="publishAdminExam('${e.id}')"> 🌐 ${escapeHTML(t("publish"))} </button>` : "" } <button class="danger" onclick="deleteAdminExam('${e.id}')"> 🗑️ ${escapeHTML(t("delete"))} </button> </div> </div> `).join(""); } async function editAdminExam(id){ if(!await isTrcoseAdmin())return; const {data:exam,error}=await supabaseClient .from("exams") .select("*") .eq("id",id) .single(); if(error){ alert(error.message); return; } const {data:questions,error:qError}=await supabaseClient .from("exam_questions") .select("*") .eq("exam_id",id) .order("question_order",{ascending:true}); if(qError){ alert(qError.message); return; } editingExamId=id; $("adminExamTitle").value=exam.title||""; $("adminExamDescription").value=exam.description||""; $("adminExamDuration").value=exam.duration_minutes||30; $("adminExamPassing").value=exam.passing_score||50; adminExamQuestions=(questions||[]).map((q,i)=>({ localId:"existing_"+i+"_"+Date.now(), id:q.id, question:q.question||"", option_a:q.option_a||"", option_b:q.option_b||"", option_c:q.option_c||"", option_d:q.option_d||"", correct_answer:q.correct_answer||"a" })); renderAdminExamQuestions(); window.scrollTo({ top:$("adminExamManagerSection").offsetTop-20, behavior:"smooth" }); } async function publishAdminExam(id){ if(!await isTrcoseAdmin())return; const {error}=await supabaseClient .from("exams") .update({status:"published"}) .eq("id",id); if(error){ alert(error.message); return; } await loadAdminExamManager(); } async function deleteAdminExam(id){ if(!await isTrcoseAdmin())return; if(!confirm("Urashaka gusiba iyi exam n'ibibazo byayo?")) return; const {error}=await supabaseClient .from("exams") .delete() .eq("id",id); if(error){ alert(error.message); return; } await loadAdminExamManager(); }
 </script>
+
+
+<!-- Google Translate engine is intentionally kept off-screen. Language choice is shared with Trcose Market/Job Portal. -->
+<div id="google_translate_element" aria-hidden="true"></div>
+<script>
+(function(){
+  const supported=['rw','en','fr','sw','es','pt','de','ar'];
+  function getSavedLanguage(){
+    try { const v=localStorage.getItem('trcose_language')||localStorage.getItem('zunivo_language')||'rw'; return supported.includes(v)?v:'rw'; }
+    catch(e){ return 'rw'; }
+  }
+  function setTranslateCookie(lang){
+    document.cookie='googtrans=/rw/'+lang+';path=/;max-age=31536000;SameSite=Lax';
+  }
+  window.googleTranslateElementInit=function(){
+    try {
+      if(window.google && google.translate && google.translate.TranslateElement){
+        new google.translate.TranslateElement({pageLanguage:'rw',includedLanguages:'rw,en,fr,sw,es,pt,de,ar',autoDisplay:false},'google_translate_element');
+        applyGoogleTranslation(getSavedLanguage());
+      }
+    } catch(e) { /* Keep the website usable if Google Translate is unavailable. */ }
+  };
+  window.applyGoogleTranslation=function(lang){
+    if(!supported.includes(lang)) lang='rw';
+    try {
+      localStorage.setItem('trcose_language',lang);
+      localStorage.setItem('zunivo_language',lang);
+      setTranslateCookie(lang);
+      const html=document.getElementById('zunivoHtml')||document.documentElement;
+      if(html) html.setAttribute('lang',lang);
+      let attempts=0;
+      const choose=()=>{
+        const combo=document.querySelector('.goog-te-combo');
+        if(combo){
+          if(combo.value!==lang){combo.value=lang;combo.dispatchEvent(new Event('change',{bubbles:true}));}
+          return;
+        }
+        if(attempts++<20) setTimeout(choose,300);
+      };
+      choose();
+    } catch(e) { /* Translation must never block marketplace/job features. */ }
+  };
+  const originalApply=window.applyTrcoseLanguage;
+  if(typeof originalApply==='function'){
+    window.applyTrcoseLanguage=function(lang){
+      originalApply(lang);
+      if(typeof window.applyGoogleTranslation==='function') window.applyGoogleTranslation(lang);
+      ['languageSelect','topLanguageSelect','jobTopLanguageSelect'].forEach(id=>{
+        const el=document.getElementById(id); if(el && el.value!==lang) el.value=lang;
+      });
+    };
+  }
+  window.addEventListener('storage',function(e){
+    if(e.key==='trcose_language'||e.key==='zunivo_language'){
+      const lang=getSavedLanguage();
+      ['languageSelect','topLanguageSelect','jobTopLanguageSelect'].forEach(id=>{
+        const el=document.getElementById(id); if(el && el.value!==lang) el.value=lang;
+      });
+      if(typeof window.applyGoogleTranslation==='function') window.applyGoogleTranslation(lang);
+    }
+  });
+})();
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 
 </body>
 </html>
