@@ -97,7 +97,7 @@ body > .skiptranslate, body > iframe.goog-te-banner-frame, iframe.goog-te-banner
 <header>
  <div class="head">
   <div class="top">
-   <div class="logo">Trcose Market 🛍️</div>
+   <div class="logo"><span translate="no" class="notranslate">Trcose</span> <span id="brandMarketWord" translate="no" class="notranslate">Market</span> 🛍️</div>
    <div class="topActions">
     <button class="secondary" onclick="openNotifications()" aria-label="Notifications">🔔</button>
     <button class="topAvatarBtn" onclick="toggleMenu()" aria-label="Open profile menu"><img id="topProfileAvatar" src="https://via.placeholder.com/160x160?text=T" alt="Profile picture"></button>
@@ -443,13 +443,14 @@ body > .skiptranslate, body > iframe.goog-te-banner-frame, iframe.goog-te-banner
 </main>
 
 <div id="authModal" class="modal"><div class="modalbox"><div class="loginBox" style="background:linear-gradient(135deg,#0750d8,#1769ff);color:#fff;border-radius:20px;padding:18px">
- <h2>🔐 Kwinjira muri Trcose</h2><button style="width:100%" onclick="googleLogin()">🔵 Continue with Google</button><hr>
- <input id="authEmail" type="email" placeholder="Email"><input id="authPassword" type="password" placeholder="Password">
- <button onclick="emailLogin()">📧 Injira</button><button class="secondary" onclick="emailSignup()">📝 Sign Up</button><hr>
- <input id="authPhone" placeholder="+2507..."><button class="secondary" onclick="sendPhoneOTP()">📱 Ohereza OTP</button>
- <input id="authOtp" placeholder="6-digit OTP"><button onclick="verifyPhoneOTP()">✅ Verify OTP</button>
- <p id="authMessage" class="muted"></p><button class="danger" onclick="closeAuth()">Funga</button>
+ <h2>🔐 Kwinjira muri Trcose</h2>
+ <button class="googleLoginBtn" style="width:100%;background:#fff;color:#263238;border:1px solid #dfe3e8;display:flex;align-items:center;justify-content:center;gap:10px" onclick="googleLogin()"><span aria-hidden="true" style="font-size:23px;font-weight:900;background:conic-gradient(from -45deg,#4285F4 0 25%,#34A853 25% 48%,#FBBC05 48% 70%,#EA4335 70% 86%,#4285F4 86%);color:transparent;background-clip:text;-webkit-background-clip:text">G</span><span>Continue with Google</span></button><hr>
+ <input id="authEmail" type="email" placeholder="Email" autocomplete="email"><input id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+ <button onclick="emailLogin()">📧 Injira</button><button class="secondary" onclick="emailSignup()">📝 Sign Up</button>
+ <button type="button" class="secondary" style="width:100%;margin-top:8px" onclick="sendPasswordReset()">Forgot password? / Wibagiwe ijambo ry’ibanga?</button>
+ <p id="authMessage" class="muted" role="status" aria-live="polite"></p><button class="danger" onclick="closeAuth()">Funga</button>
 </div></div></div>
+<div id="passwordResetModal" class="modal"><div class="modalbox"><h2>🔐 Reset Password</h2><p>Andika ijambo ry’ibanga rishya.</p><input id="newPassword" type="password" minlength="6" autocomplete="new-password" placeholder="New password (at least 6 characters)"><input id="confirmNewPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Confirm new password"><p id="passwordResetMessage" class="muted" role="status" aria-live="polite"></p><button onclick="saveNewPassword()">Save new password</button><button class="secondary" onclick="closeModal('passwordResetModal')">Cancel</button></div></div>
 
 <div id="paymentModal" class="modal"><div class="modalbox"><h2>💳 Kwishyura</h2><p id="paymentDescription"></p>
  <div class="panel"><label><input type="radio" name="paymentMethod" value="mtn" checked> MTN Mobile Money</label>
@@ -522,7 +523,7 @@ async function updateAdminUI(){$("adminNavBtn").style.display=await isTrcoseAdmi
 async function refreshUser(){const {data}=await supabaseClient.auth.getUser();user=data.user||null;await updateAdminUI();if(user){await loadProfile();await loadWallet()}}
 async function init(){
  const {data}=await supabaseClient.auth.getSession();user=data.session?.user||null;await updateAdminUI();
- supabaseClient.auth.onAuthStateChange((_event,session)=>{user=session?.user||null;setTimeout(async()=>{await updateAdminUI();if(user){await loadProfile();await loadFollowStats()}renderProducts();loadFreeVideoPosts()},0)});
+ supabaseClient.auth.onAuthStateChange((event,session)=>{user=session?.user||null;if(event==="PASSWORD_RECOVERY"){setTimeout(()=>{$("passwordResetModal")?.classList.add("show")},0)}setTimeout(async()=>{await updateAdminUI();if(user){await loadProfile();await loadFollowStats()}renderProducts();loadFreeVideoPosts()},0)});
  await loadProducts();renderProducts();if(user){await loadProfile();await refreshJobAccess();await refreshExamAccess()}
  // Open a product when someone visits a shared Trcose link such as ?product=UUID.
  try{const sharedProductId=new URLSearchParams(window.location.search).get("product");if(sharedProductId){const sharedProduct=products.find(p=>String(p.id)===String(sharedProductId))||demoProducts.find(p=>String(p.id)===String(sharedProductId));if(sharedProduct){await openProduct(sharedProductId)}else{const details=$("productDetails");if(details)details.innerHTML="<div class='notice'>Iki gicuruzwa ntikiboneka kuri public cyangwa link si yo.</div>"}}}catch(e){console.warn("Shared product link error",e)}
@@ -549,6 +550,27 @@ async function emailLogin(){
  setLoginLoading(true);const {error}=await supabaseClient.auth.signInWithPassword({email,password});
  if(error)$("authMessage").textContent=error.message;else closeAuth();setLoginLoading(false)
 }
+async function sendPasswordReset(){
+ const email=$("authEmail").value.trim();
+ if(!email){$("authMessage").textContent="Banza wandike email ya konti yawe.";$("authEmail").focus();return}
+ setLoginLoading(true);
+ const redirectTo=window.location.origin+window.location.pathname;
+ const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+ $("authMessage").textContent=error?("Reset password failed: "+error.message):"Niba iyi email ifite konti, twohereje link yo guhindura password. Reba Inbox na Spam.";
+ setLoginLoading(false);
+}
+async function saveNewPassword(){
+ const password=$("newPassword").value,confirmPassword=$("confirmNewPassword").value,msg=$("passwordResetMessage");
+ if(password.length<6){msg.textContent="Password igomba kugira nibura inyuguti 6.";return}
+ if(password!==confirmPassword){msg.textContent="Password zombi ntizihuye.";return}
+ msg.textContent="Turimo kubika password nshya...";
+ const {error}=await supabaseClient.auth.updateUser({password});
+ if(error){msg.textContent="Ntibyashobotse: "+error.message;return}
+ msg.textContent="Password yahinduwe neza. Urashobora kwinjira ukoresheje password nshya.";
+ $("newPassword").value="";$("confirmNewPassword").value="";
+ setTimeout(async()=>{closeModal("passwordResetModal");await supabaseClient.auth.signOut();user=null;openAuth()},1200);
+}
+
 async function sendPhoneOTP(){
  const phone=$("authPhone").value.trim();if(!phone){$("authMessage").textContent="Andika phone nka +2507...";return}
  setLoginLoading(true);const {error}=await supabaseClient.auth.signInWithOtp({phone});$("authMessage").textContent=error?error.message:"OTP yoherejwe.";setLoginLoading(false)
@@ -1079,7 +1101,12 @@ const ZUNIVO_LANGUAGES = { rw: "Kinyarwanda", en: "English", fr: "Français", sw
 function detectTrcoseLanguage(){ const saved=localStorage.getItem("trcose_language") || localStorage.getItem("zunivo_language"); if(saved && ZUNIVO_LANGUAGES[saved]) return saved; const browserLang=(navigator.language||navigator.userLanguage||"rw").toLowerCase().split("-")[0]; return ZUNIVO_LANGUAGES[browserLang] ? browserLang : "en"; }
 let zunivoLanguage=detectTrcoseLanguage();
 function t(key){ return TRCOSE_JOB_TRANSLATIONS[zunivoLanguage]?.[key] || ZUNIVO_TRANSLATIONS[zunivoLanguage]?.[key] || ZUNIVO_TRANSLATIONS.en?.[key] || key; }
-function applyTrcoseLanguage(lang){ if(!ZUNIVO_LANGUAGES[lang]) lang="en"; zunivoLanguage=lang; localStorage.setItem("trcose_language",lang); localStorage.setItem("zunivo_language",lang); const html=document.getElementById("zunivoHtml")||document.documentElement; html.lang=lang; html.dir=lang==="ar"?"rtl":"ltr"; document.documentElement.style.direction=lang==="ar"?"rtl":"ltr"; document.querySelectorAll("[data-i18n]").forEach(el=>{ const key=el.getAttribute("data-i18n"); const value=t(key); if(value && el.children.length===0) el.textContent=value; }); document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=t(el.getAttribute("data-i18n-placeholder"));}); const selector=document.getElementById("languageSelect"); if(selector)selector.value=lang; }
+function updateTrcoseBrandLanguage(lang){
+ const words={rw:"Market",en:"Market",fr:"Marché",sw:"Soko",es:"Mercado",pt:"Mercado",de:"Markt",ar:"السوق"};
+ const word=words[lang]||"Market";const brand=document.getElementById("brandMarketWord");if(brand)brand.textContent=word;
+ document.title="Trcose "+word;
+}
+function applyTrcoseLanguage(lang){ if(!ZUNIVO_LANGUAGES[lang]) lang="en"; zunivoLanguage=lang; localStorage.setItem("trcose_language",lang); localStorage.setItem("zunivo_language",lang); const html=document.getElementById("zunivoHtml")||document.documentElement; html.lang=lang; html.dir=lang==="ar"?"rtl":"ltr"; document.documentElement.style.direction=lang==="ar"?"rtl":"ltr"; document.querySelectorAll("[data-i18n]").forEach(el=>{ const key=el.getAttribute("data-i18n"); const value=t(key); if(value && el.children.length===0) el.textContent=value; }); document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=t(el.getAttribute("data-i18n-placeholder"));}); const selector=document.getElementById("languageSelect"); if(selector)selector.value=lang; updateTrcoseBrandLanguage(lang); }
 function changeLanguage(lang){ applyTrcoseLanguage(lang); }
 document.addEventListener("DOMContentLoaded",()=>applyTrcoseLanguage(zunivoLanguage));
     let adminExamQuestions=[]; let editingExamId=null; let examTimer=null; let activeExam=null; function addAdminExamQuestion(data=null){ const id="q_"+Date.now()+"_"+Math.random().toString(36).slice(2,7); adminExamQuestions.push({ localId:id, id:data?.id||null, question:data?.question||"", option_a:data?.option_a||"", option_b:data?.option_b||"", option_c:data?.option_c||"", option_d:data?.option_d||"", correct_answer:data?.correct_answer||"a" }); renderAdminExamQuestions(); } function renderAdminExamQuestions(){ const box=$("adminExamQuestions"); if(!adminExamQuestions.length){ box.innerHTML= '<div class="notice">Nta question urashyiramo. Kanda "Ongeramo Question".</div>'; return; } box.innerHTML=adminExamQuestions.map((q,i)=>` <div class="examBuilderQuestion"> <h4> Question ${i+1} </h4> <textarea placeholder="${escapeHTML(t("question"))}" oninput="updateAdminExamQuestion('${q.localId}','question',this.value)" >${escapeHTML(q.question)}</textarea> <div class="examOptionGrid"> <input placeholder="${escapeHTML(t("option_a"))}" value="${escapeHTML(q.option_a)}" oninput="updateAdminExamQuestion('${q.localId}','option_a',this.value)" > <input placeholder="${escapeHTML(t("option_b"))}" value="${escapeHTML(q.option_b)}" oninput="updateAdminExamQuestion('${q.localId}','option_b',this.value)" > <input placeholder="${escapeHTML(t("option_c"))}" value="${escapeHTML(q.option_c)}" oninput="updateAdminExamQuestion('${q.localId}','option_c',this.value)" > <input placeholder="${escapeHTML(t("option_d"))}" value="${escapeHTML(q.option_d)}" oninput="updateAdminExamQuestion('${q.localId}','option_d',this.value)" > </div> <div style="margin-top:10px"> <b>${escapeHTML(t("correct_answer"))}</b> <div class="examOptionGrid"> ${["a","b","c","d"].map(x=>` <label class="examOption"> <input type="radio" name="correct_${q.localId}" ${q.correct_answer===x?"checked":""} onchange="updateAdminExamQuestion('${q.localId}','correct_answer','${x}')" > ${x.toUpperCase()} </label> `).join("")} </div> </div> <div class="examAdminActions"> <button class="danger" onclick="removeAdminExamQuestion('${q.localId}')"> 🗑️ Remove </button> </div> </div> `).join(""); } function updateAdminExamQuestion(localId,key,value){ const q=adminExamQuestions.find(x=>x.localId===localId); if(q) q[key]=value; } function removeAdminExamQuestion(localId){ adminExamQuestions= adminExamQuestions.filter(x=>x.localId!==localId); renderAdminExamQuestions(); } function resetAdminExamBuilder(){ editingExamId=null; adminExamQuestions=[]; $("adminExamTitle").value=""; $("adminExamDescription").value=""; $("adminExamDuration").value=30; $("adminExamPassing").value=50; renderAdminExamQuestions(); } async function saveAdminExam(status){ if(!await isTrcoseAdmin()){ alert("Nturi Admin."); return; } const title=$("adminExamTitle").value.trim(); const description=$("adminExamDescription").value.trim(); const duration=Number($("adminExamDuration").value||30); const passing=Number($("adminExamPassing").value||50); if(!title){ $("adminExamManagerMessage").textContent= "Andika exam title."; return; } if(!adminExamQuestions.length){ $("adminExamManagerMessage").textContent= "Banza wongeremo questions."; return; } for(const q of adminExamQuestions){ if( !q.question.trim() || !q.option_a.trim() || !q.option_b.trim() || !q.option_c.trim() || !q.option_d.trim() ){ $("adminExamManagerMessage").textContent= "Buri question igomba kugira question na options A-D."; return; } } $("adminExamManagerMessage").textContent="⏳ Saving..."; let examId=editingExamId; if(examId){ const {error}=await supabaseClient .from("exams") .update({ title, description, duration_minutes:duration, passing_score:passing, status }) .eq("id",examId); if(error){ $("adminExamManagerMessage").textContent=error.message; return; } await supabaseClient .from("exam_questions") .delete() .eq("exam_id",examId); }else{ const {data,error}=await supabaseClient .from("exams") .insert({ title, description, duration_minutes:duration, passing_score:passing, status, created_by:user.id }) .select() .single(); if(error){ $("adminExamManagerMessage").textContent=error.message; return; } examId=data.id; } const rows=adminExamQuestions.map((q,index)=>({ exam_id:examId, question_order:index+1, question:q.question.trim(), option_a:q.option_a.trim(), option_b:q.option_b.trim(), option_c:q.option_c.trim(), option_d:q.option_d.trim(), correct_answer:q.correct_answer })); const {error:qError}=await supabaseClient .from("exam_questions") .insert(rows); if(qError){ $("adminExamManagerMessage").textContent=qError.message; return; } $("adminExamManagerMessage").innerHTML= status==="published" ? `<span class="success">${escapeHTML(t("exam_published_success"))}</span>` : `<span class="success">${escapeHTML(t("exam_saved"))}</span>`; resetAdminExamBuilder(); await loadAdminExamManager(); } async function loadAdminExamManager(){ if(!await isTrcoseAdmin())return; const box=$("adminExamManagerList"); box.innerHTML="⏳ Loading..."; const {data,error}=await supabaseClient .from("exams") .select("*") .order("created_at",{ascending:false}); if(error){ box.innerHTML= `<div class="error">${escapeHTML(error.message)}</div>`; return; } if(!data?.length){ box.innerHTML= `<p class="muted">${escapeHTML(t("no_exams"))}</p>`; return; } box.innerHTML=data.map(e=>` <div class="card" style="padding:14px;margin-bottom:10px"> <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"> <h3 style="margin:0"> ${escapeHTML(e.title)} </h3> <span class="status ${ e.status==="published" ?"examPublished" :"examDraft" }"> ${escapeHTML(e.status||"draft")} </span> </div> <p class="muted"> ${escapeHTML(e.description||"")} </p> <p> ⏱️ 
@@ -1132,6 +1159,7 @@ ${escapeHTML(String(e.duration_minutes||0))} min · 🎯 ${escapeHTML(String(e.p
     window.applyTrcoseLanguage=function(lang){
       originalApply(lang);
       if(typeof window.applyGoogleTranslation==='function') window.applyGoogleTranslation(lang);
+      if(typeof window.updateTrcoseBrandLanguage==='function') window.updateTrcoseBrandLanguage(lang);
       ['languageSelect','topLanguageSelect','jobTopLanguageSelect'].forEach(id=>{
         const el=document.getElementById(id); if(el && el.value!==lang) el.value=lang;
       });
@@ -1144,6 +1172,7 @@ ${escapeHTML(String(e.duration_minutes||0))} min · 🎯 ${escapeHTML(String(e.p
         const el=document.getElementById(id); if(el && el.value!==lang) el.value=lang;
       });
       if(typeof window.applyGoogleTranslation==='function') window.applyGoogleTranslation(lang);
+      if(typeof window.updateTrcoseBrandLanguage==='function') window.updateTrcoseBrandLanguage(lang);
     }
   });
 })();
