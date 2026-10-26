@@ -555,48 +555,231 @@ async function googleLogin(){
  const {error}=await supabaseClient.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname}});
  if(error){$("authMessage").textContent=error.message;setLoginLoading(false)}
 }
+async function googleLogin(){
+setLoginLoading(true);
+const redirectTo = window.location.origin + window.location.pathname;
+
+const { error } = await supabaseClient.auth.signInWithOAuth({
+provider: "google",
+options: { redirectTo }
+});
+
+if(error){
+$("authMessage").textContent = error.message;
+setLoginLoading(false);
+}
+}
+
 async function sendPasswordReset(){
- const email=$("authEmail").value.trim();
- if(!email){$("authMessage").textContent=t("reset_email_required");return}
- setLoginLoading(true);
- const redirectTo=window.location.origin+window.location.pathname;
- const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
- $("authMessage").textContent=error?(t("password_update_error")+error.message):t("reset_email_sent");
- setLoginLoading(false);
+const email = $("authEmail").value.trim();
+if(!email){
+$("authMessage").textContent = t("reset_email_required");
+return;
 }
+
+setLoginLoading(true);
+const redirectTo = window.location.origin + window.location.pathname;
+
+const { error } = await supabaseClient.auth.resetPasswordForEmail(
+email,
+{ redirectTo }
+);
+
+$("authMessage").textContent = error
+? t("password_update_error") + error.message
+: t("reset_email_sent");
+
+setLoginLoading(false);
+}
+
 async function saveNewPassword(event){
- if(event)event.preventDefault();
- const password=$("newPassword").value,confirmPassword=$("confirmNewPassword").value;
- const msg=$("passwordRecoveryMessage");
- if(password.length<6||password!==confirmPassword){msg.textContent=t("password_mismatch");return}
- msg.textContent="…";
- const {error}=await supabaseClient.auth.updateUser({password});
- if(error){msg.textContent=t("password_update_error")+error.message;return}
- msg.textContent=t("password_updated");
- $("newPassword").value="";$("confirmNewPassword").value="";
- setTimeout(()=>{$("passwordRecoveryModal").classList.remove("show");if($("authModal"))$("authModal").classList.remove("show")},1800);
+if(event) event.preventDefault();
+
+const password = $("newPassword").value;
+const confirmPassword = $("confirmNewPassword").value;
+const msg = $("passwordRecoveryMessage");
+
+if(password.length < 6 || password !== confirmPassword){
+msg.textContent = t("password_mismatch");
+return;
 }
+
+msg.textContent = "…";
+
+const { error } = await supabaseClient.auth.updateUser({ password });
+
+if(error){
+msg.textContent = t("password_update_error") + error.message;
+return;
+}
+
+msg.textContent = t("password_updated");
+$("newPassword").value = "";
+$("confirmNewPassword").value = "";
+
+setTimeout(() => {
+$("passwordRecoveryModal").classList.remove("show");
+if($("authModal")){
+$("authModal").classList.remove("show");
+}
+}, 1800);
+}
+
 async function emailSignup(){
- const email=$("authEmail").value.trim(),password=$("authPassword").value;
- if(!email||password.length<6){$("authMessage").textContent="Email na password (min 6) byuzuze.";return}
- setLoginLoading(true);const {data,error}=await supabaseClient.auth.signUp({email,password});
- $("authMessage").textContent=error?error.message:(data.user?"Account yakozwe. Reba email niba confirmation isabwa.":"Reba email yawe.");setLoginLoading(false)
+const email = $("authEmail").value.trim();
+const password = $("authPassword").value;
+const msg = $("authMessage");
+
+if(!email || password.length < 6){
+msg.textContent = "Uzuza email na password nibura inyuguti 6.";
+return;
 }
+
+setLoginLoading(true);
+
+try {
+const redirectTo =
+window.location.origin + window.location.pathname;
+
+```
+const { data, error } = await supabaseClient.auth.signUp({
+  email,
+  password,
+  options: { emailRedirectTo: redirectTo }
+});
+
+if(error){
+  msg.textContent = error.message;
+  return;
+}
+
+if(data.session){
+  msg.textContent = "Konti yakozwe. Urimo kwinjira...";
+  closeAuth();
+} else {
+  msg.textContent =
+    "Konti yakozwe. Emeza email yawe ukoresheje link woherejwe. Nyuma yo kuyemeza, garuka kuri Trcose Market winjire ukoresheje email na password byawe.";
+}
+```
+
+} catch(error) {
+msg.textContent = error.message || "Habaye ikibazo cyo gukora konti.";
+} finally {
+setLoginLoading(false);
+}
+}
+
 async function emailLogin(){
- const email=$("authEmail").value.trim(),password=$("authPassword").value;
- if(!email||!password){$("authMessage").textContent="Uzuza email na password.";return}
- setLoginLoading(true);const {error}=await supabaseClient.auth.signInWithPassword({email,password});
- if(error)$("authMessage").textContent=error.message;else closeAuth();setLoginLoading(false)
+const email = $("authEmail").value.trim();
+const password = $("authPassword").value;
+const msg = $("authMessage");
+
+if(!email || !password){
+msg.textContent = "Uzuza email na password.";
+return;
 }
+
+setLoginLoading(true);
+
+try {
+const { data, error } = await supabaseClient.auth.signInWithPassword({
+email,
+password
+});
+
+```
+if(error){
+  msg.textContent = error.message;
+  return;
+}
+
+if(data.session){
+  closeAuth();
+  msg.textContent = "";
+} else {
+  msg.textContent = "Ntibyashobotse kwinjira. Ongera ugerageze.";
+}
+```
+
+} catch(error) {
+msg.textContent = error.message || "Habaye ikibazo cyo kwinjira.";
+} finally {
+setLoginLoading(false);
+}
+}
+
 async function sendPhoneOTP(){
- const phone=$("authPhone").value.trim();if(!phone){$("authMessage").textContent="Andika phone nka +2507...";return}
- setLoginLoading(true);const {error}=await supabaseClient.auth.signInWithOtp({phone});$("authMessage").textContent=error?error.message:"OTP yoherejwe.";setLoginLoading(false)
+const phone = $("authPhone").value.trim();
+
+if(!phone){
+$("authMessage").textContent = "Andika phone nka +2507...";
+return;
 }
+
+setLoginLoading(true);
+
+try {
+const { error } = await supabaseClient.auth.signInWithOtp({ phone });
+
+```
+$("authMessage").textContent = error
+  ? error.message
+  : "OTP yoherejwe kuri telefone yawe.";
+```
+
+} catch(error) {
+$("authMessage").textContent = error.message || "OTP ntiyoherejwe.";
+} finally {
+setLoginLoading(false);
+}
+}
+
 async function verifyPhoneOTP(){
- const phone=$("authPhone").value.trim(),token=$("authOtp").value.trim();setLoginLoading(true);
- const {error}=await supabaseClient.auth.verifyOtp({phone,token,type:"sms"});$("authMessage").textContent=error?error.message:"Phone verified.";setLoginLoading(false);if(!error)closeAuth()
+const phone = $("authPhone").value.trim();
+const token = $("authOtp").value.trim();
+
+if(!phone || !token){
+$("authMessage").textContent = "Uzuza telefone na OTP.";
+return;
 }
-async function logout(){await supabaseClient.auth.signOut();user=null;await updateAdminUI();showPage("home")}
+
+setLoginLoading(true);
+
+try {
+const { error } = await supabaseClient.auth.verifyOtp({
+phone,
+token,
+type: "sms"
+});
+
+```
+if(error){
+  $("authMessage").textContent = error.message;
+} else {
+  closeAuth();
+  $("authMessage").textContent = "";
+}
+```
+
+} catch(error) {
+$("authMessage").textContent = error.message || "OTP ntiyemejwe.";
+} finally {
+setLoginLoading(false);
+}
+}
+
+async function logout(){
+const { error } = await supabaseClient.auth.signOut();
+
+if(error){
+$("authMessage").textContent = error.message;
+return;
+}
+
+user = null;
+await updateAdminUI();
+showPage("home");
+}
 
 function previewProfilePhoto(e){const f=e.target.files?.[0];if(f){const url=URL.createObjectURL(f);$("profileAvatar").src=url;if($("topProfileAvatar"))$("topProfileAvatar").src=url}}
 function setMediaType(t){
