@@ -1070,8 +1070,37 @@ ${escapeHTML(String(e.duration_minutes||0))} min · 🎯 ${escapeHTML(String(e.p
 </script>
 
 <!-- Google Translate engine is intentionally kept off-screen. Language choice is shared with Trcose Market/Job Portal. -->
-<div id="google_translate_element" aria-hidden="true"></div>
-<script>
+/* Hide Google Translate UI, but keep its translation engine active */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+.goog-te-balloon-frame,
+.goog-te-menu-frame,
+#goog-gt-tt,
+.goog-te-spinner-pos,
+.goog-te-gadget-icon {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+html,
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+#google_translate_element {
+  position: fixed !important;
+  left: -10000px !important;
+  top: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+    <script>
 (function(){
   const supported=['rw','en','fr','sw','es','pt','de','ar'];
   function getSavedLanguage(){
