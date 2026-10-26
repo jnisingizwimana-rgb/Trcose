@@ -569,7 +569,29 @@ $("authMessage").textContent = error.message;
 setLoginLoading(false);
 }
 }
+async function googleLogin(){
+  setLoginLoading(true);
 
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + window.location.pathname,
+        queryParams: {
+          prompt: "select_account"
+        }
+      }
+    });
+
+    if (error) {
+      $("authMessage").textContent = error.message;
+      setLoginLoading(false);
+    }
+  } catch (error) {
+    $("authMessage").textContent = error.message;
+    setLoginLoading(false);
+  }
+}
 async function sendPasswordReset(){
 const email = $("authEmail").value.trim();
 if(!email){
