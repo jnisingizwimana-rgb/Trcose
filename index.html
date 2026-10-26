@@ -155,16 +155,70 @@ body > .skiptranslate, body > iframe.goog-te-banner-frame, iframe.goog-te-banner
  <section class="videoFeed" aria-labelledby="freeVideoTitle">
   <h2 id="freeVideoTitle">🎬 Shyiraho Video</h2>
   <p class="muted">Shyiraho video yawe, abandi bayirebe kandi bayikurikire.</p>
-  <div class="videoComposer">
-   <input id="videoPostName" maxlength="100" placeholder="Umutwe wa video">
-   <textarea id="videoPostDescription" maxlength="1500" placeholder="Ibisobanuro bigufi (si ngombwa)"></textarea>
-   <input id="videoPostFile" type="file" accept="video/*">
-   <p class="muted">Hitamo video itarengeje 100 MB.</p>
-   <button onclick="publishFreeVideoPost()">📤 Shyiraho Video</button>
-   <p id="videoPostMessage" class="muted" role="status"></p>
+
+<div class="videoComposer">
+  <h3>➕ Shyiraho Video Post</h3>
+
+  <input
+    id="videoPostName"
+    maxlength="100"
+    placeholder="Izina rya video"
+  >
+
+  <textarea
+    id="videoPostDescription"
+    maxlength="1500"
+    placeholder="Ibisobanuro bya video"
+  ></textarea>
+
+  <label for="videoPostFile">Hitamo video yawe</label>
+  <input
+    id="videoPostFile"
+    type="file"
+    accept="video/*"
+    onchange="previewVideoForThumbnail()"
+  >
+
+  <div id="videoThumbnailEditor" style="display:none;margin-top:12px">
+    <h4>🖼️ Edit thumbnail</h4>
+
+    <video
+      id="videoPostPreview"
+      controls
+      muted
+      playsinline
+      style="width:100%;max-height:300px;background:#111;border-radius:12px"
+    ></video>
+
+    <button type="button" onclick="useCurrentVideoFrame()">
+      🎬 Use our video
+    </button>
+
+    <p>Cyangwa hitamo ifoto yawe:</p>
+    <input
+      id="videoPostThumbnailFile"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      onchange="previewChosenThumbnail()"
+    >
+
+    <img
+      id="videoPostThumbnailPreview"
+      alt="Thumbnail preview"
+      style="display:none;width:100%;max-height:220px;object-fit:contain;margin-top:10px;border-radius:10px"
+    >
   </div>
-  <div id="videoPosts"><p class="muted">Turimo gushaka video posts...</p></div>
- </section>
+
+  <p class="muted">
+    Video igomba kuba itarengeje 100 MB. Hitamo frame nziza cyangwa ifoto yo muri telefone.
+  </p>
+
+  <button type="button" onclick="publishFreeVideoPost()">
+    🌐 Shyira Video ku Isoko — Ubuntu
+  </button>
+
+  <p id="videoPostMessage" class="muted"></p>
+</div>
 </section>
 
 <section id="sellPage" class="page hidden">
@@ -1116,6 +1170,98 @@ function hidePhoneNumbers(value){
    const digits=match.replace(/\D/g,"");
    return digits.length>=9 ? "••••••••" : match;
  });
+}
+    
+let videoPostThumbnail = null;
+let videoPostPreviewUrl = null;
+let videoPostThumbnailUrl = null;
+
+function previewVideoForThumbnail() {
+  const file = $("videoPostFile").files?.[0];
+  const editor = $("videoThumbnailEditor");
+  const video = $("videoPostPreview");
+  const img = $("videoPostThumbnailPreview");
+
+  videoPostThumbnail = null;
+  img.style.display = "none";
+
+  if (videoPostPreviewUrl) {
+    URL.revokeObjectURL(videoPostPreviewUrl);
+    videoPostPreviewUrl = null;
+  }
+
+  if (!file || !file.type.startsWith("video/")) {
+    editor.style.display = "none";
+    video.removeAttribute("src");
+    return;
+  }
+
+  videoPostPreviewUrl = URL.createObjectURL(file);
+  video.src = videoPostPreviewUrl;
+  editor.style.display = "block";
+}
+
+function previewChosenThumbnail() {
+  const file = $("videoPostThumbnailFile").files?.[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("Hitamo ifoto ya JPG, PNG cyangwa WebP.");
+    return;
+  }
+
+  videoPostThumbnail = file;
+
+  const img = $("videoPostThumbnailPreview");
+  if (videoPostThumbnailUrl) {
+    URL.revokeObjectURL(videoPostThumbnailUrl);
+  }
+
+  videoPostThumbnailUrl = URL.createObjectURL(file);
+  img.src = videoPostThumbnailUrl;
+  img.style.display = "block";
+}
+
+async function useCurrentVideoFrame() {
+  const video = $("videoPostPreview");
+  const img = $("videoPostThumbnailPreview");
+
+  if (!video.src || !video.videoWidth || !video.videoHeight) {
+    alert("Banza uhitemo video, uyifungure, hanyuma uhagarare kuri frame ushaka.");
+    return;
+  }
+
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const blob = await new Promise((resolve, reject) => {
+      canvas.toBlob(result => {
+        if (result) resolve(result);
+        else reject(new Error("Ntibyashobotse gufata ifoto muri video."));
+      }, "image/jpeg", 0.85);
+    });
+
+    videoPostThumbnail = new File(
+      [blob],
+      "video-thumbnail.jpg",
+      { type: "image/jpeg" }
+    );
+
+    if (videoPostThumbnailUrl) {
+      URL.revokeObjectURL(videoPostThumbnailUrl);
+    }
+
+    videoPostThumbnailUrl = URL.createObjectURL(blob);
+    img.src = videoPostThumbnailUrl;
+    img.style.display = "block";
+  } catch (e) {
+    alert(e.message || "Thumbnail ntiyashoboye gutegurwa.");
+  }
 }
 async function publishFreeVideoPost() {
   const box = $("videoPostMessage");
