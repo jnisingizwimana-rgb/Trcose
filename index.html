@@ -912,26 +912,138 @@ function hidePhoneNumbers(value){
    return digits.length>=9 ? "••••••••" : match;
  });
 }
-async function publishFreeVideoPost(){
- const box=$("videoPostMessage");
- if(!user){openAuth();return}
- const name=$("videoPostName").value.trim(), description=$("videoPostDescription").value.trim(), file=$("videoPostFile").files?.[0];
- if(!name||!file){box.textContent="Andika izina rya post uhitemo na video.";return}
- if(!file.type.startsWith("video/")){box.textContent="Hitamo file ya video gusa.";return}
- if(file.size>100*1024*1024){box.textContent="Video irenze 100 MB. Hitamo ntoya.";return}
- box.textContent="Turimo kohereza video... tegereza.";
- try{
-  const ext=(file.name.split(".").pop()||"mp4").toLowerCase();
-  const path=`public-posts/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const {error:uploadError}=await supabaseClient.storage.from("product-videos").upload(path,file,{upsert:false});
-  if(uploadError)throw uploadError;
-  const url=supabaseClient.storage.from("product-videos").getPublicUrl(path).data.publicUrl;
-  const {error}=await supabaseClient.from("products").insert({seller_id:user.id,name,description,price:0,city:"",category:"Video",image_url:url,media_type:"video",media_text:null,status:"active"});
-  if(error)throw error;
-  $("videoPostName").value="";$("videoPostDescription").value="";$("videoPostFile").value="";
-  box.textContent="Video yashyizwe ku rubuga.";
-  await loadProducts();renderProducts();await loadFreeVideoPosts();
- }catch(e){box.textContent="Ntibyashobotse: "+(e?.message||"Reba product-videos bucket, products columns na Supabase RLS policies.");}
+async function publishFreeVideoPost() {
+  const box = $("videoPostMessage");
+
+  if (!user) {
+    openAuth();
+    return;
+  }
+
+  const name = $("videoPostName").value.trim();
+  const description = $("videoPostDescription").value.trim();
+  const file = $("videoPostFile").files?.[0];
+
+  if (!name || !file) {
+    box.textContent = "Andika izina rya video uhitemo na video.";
+    return;
+  }
+
+  if (!file.type.startsWith("video/")) {
+    box.textContent = "Hitamo file ya video gusa.";
+    return;
+  }
+
+  box.textContent = "Turimo kugenzura igihe cya video...";
+
+  let duration;
+
+  try {
+    duration = await new Promise((resolve, reject) => {
+      const tempVideo = document.createElement("video");
+      const tempUrl = URL.createObjectURL(file);
+
+      tempVideo.preload = "metadata";
+
+      tempVideo.onloadedmetadata = () => {
+        const seconds = tempVideo.duration;
+        URL.revokeObjectURL(tempUrl);
+
+        if (!Number.isFinite(seconds)) {
+          reject(new Error("Ntitwashoboye kumenya igihe cya video."));
+          return;
+        }
+
+        resolve(seconds);
+      };
+
+      tempVideo.onerror = () => {
+        URL.revokeObjectURL(tempUrl);
+        reject(new Error("Video ntiyasomwe. Gerageza indi video ya MP4."));
+      };
+
+      tempVideo.src = tempUrl;
+    });
+  } catch (e) {
+    box.textContent = e.message;
+    return;
+  }
+
+  if (duration > 20 * 60) {
+    box.textContent = "Video ntigomba kurenza iminota 20.";
+    return;
+  }
+
+  box.textContent = "Turimo kohereza video... tegereza.";
+
+  let uploadedPath = null;
+
+  try {
+    const ext = (
+      file.name.split(".").pop() || "mp4"
+    ).toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
+
+    const path =
+      `public-posts/${user.id}/${Date.now()}-` +
+      `${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const { error: uploadError } =
+      await supabaseClient.storage
+        .from("product-videos")
+        .upload(path, file, {
+          upsert: false,
+          contentType: file.type || "video/mp4"
+        });
+
+    if (uploadError) throw uploadError;
+
+    uploadedPath = path;
+
+    const { data: publicData } =
+      supabaseClient.storage
+        .from("product-videos")
+        .getPublicUrl(path);
+
+    const videoUrl = publicData?.publicUrl;
+
+    if (!videoUrl) {
+      throw new Error("Ntitwashoboye kubona URL ya video.");
+    }
+
+    const { error: insertError } =
+      await supabaseClient.from("products").insert({
+        seller_id: user.id,
+        name: name,
+        description: description,
+        price: 0,
+        city: "",
+        category: "Video",
+        image_url: videoUrl,
+        media_type: "video",
+        media_text: null,
+        status: "active"
+      });
+
+    if (insertError) throw insertError;
+
+    $("videoPostName").value = "";
+    $("videoPostDescription").value = "";
+    $("videoPostFile").value = "";
+
+    box.textContent =
+      "Video yashyizwe ku mugaragaro ku buntu!";
+
+    await loadProducts();
+    renderProducts();
+    await loadFreeVideoPosts();
+
+  } catch (e) {
+    console.error("Trcose video upload error:", e);
+
+    box.textContent =
+      "Ntibyashobotse kohereza video: " +
+      (e?.message || "Reba internet, Storage bucket na RLS policies.");
+  }
 }
 async function getFollowCount(userId){
  if(!userId)return 0;
