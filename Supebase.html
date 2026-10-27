@@ -1,0 +1,91 @@
+
+const SITE_URL = "https://market-co.github.io/Trcose/";
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
+
+function esc(value = "") {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[c]);
+}
+
+exports.handler = async function (event) {
+  const params = event.queryStringParameters || {};
+  const type = params.type === "job" ? "job" : "product";
+  const id = params.id || "";
+
+  if (!SUPABASE_URL || !SUPABASE_KEY || !id) {
+    return { statusCode: 400, body: "Missing configuration or ID." };
+  }
+
+  try {
+    const table = type === "job" ? "jobs" : "products";
+    const api = new URL(`/rest/v1/${table}`, SUPABASE_URL);
+    api.searchParams.set("select", "*");
+    api.searchParams.set("id", `eq.${id}`);
+    api.searchParams.set("limit", "1");
+
+    const response = await fetch(api, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
+    });
+
+    if (!response.ok) {
+      return { statusCode: 502, body: "Could not load shared item." };
+    }
+
+    const rows = await response.json();
+    const item = rows[0];
+
+    if (!item) {
+      return { statusCode: 404, body: "Item not found." };
+    }
+
+    const title = item.title || item.name || "Trcose Market";
+    const description = item.description ||
+      "Reba iyi Product cyangwa Job kuri Trcose Market.";
+    const image = item.image_url || item.image ||
+      item.thumbnail_url || item.media_url || item.file_url || "";
+
+    const destination = new URL(
+      type === "job" ? "job.html" : "",
+      SITE_URL
+    );
+    destination.searchParams.set(type, id);
+
+    const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(title)} | Trcose Market</title>
+<meta name="description" content="${esc(description)}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Trcose Market">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+${image ? `<meta property="og:image" content="${esc(image)}">` : ""}
+<meta property="og:url" content="${esc(event.rawUrl || "")}">
+<meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="refresh" content="1;url=${esc(destination.href)}">
+</head>
+<body>
+<p>Fungura <a href="${esc(destination.href)}">Trcose Market</a>...</p>
+<script>location.replace(${JSON.stringify(destination.href)});</script>
+</body></html>`;
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "public, max-age=60"
+      },
+      body: html
+    };
+  } catch (error) {
+    return { statusCode: 500, body: "An error occurred." };
+  }
+};
